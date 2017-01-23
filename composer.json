@@ -1,0 +1,21 @@
+{
+    "name": "tim/protobuf_example",
+    "type": "project",
+    "require": {
+        "google/protobuf": "*",
+        "react/socket": "*",
+        "phpunit/phpunit": "5.5.*"
+    },
+    "authors": [
+        {
+            "name": "timglabisch",
+            "email": "tim@ainfach.de"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Tg\\SimpleRPC\\": "src/"
+        }
+    }
+}
