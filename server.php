@@ -1,7 +1,9 @@
 <?php
 
 use React\Socket\ConnectionInterface;
-use Tg\SimpleRPC\SimpleRPCServer\SimpleRcpWorkerServer;
+use Tg\SimpleRPC\SimpleRPCServer\ServerHandler\LogableServerHandler;
+use Tg\SimpleRPC\SimpleRPCServer\ServerHandler\WorkerServerHandler;
+use Tg\SimpleRPC\SimpleRPCServer\SimpleRpcServerHandler;
 use Tutorial\Person;
 
 require __DIR__ . '/vendor/autoload.php';
@@ -12,7 +14,15 @@ require __DIR__ . '/vendor/autoload.php';
 $loop = React\EventLoop\Factory::create();
 
 
-$simpleRpcServer = new SimpleRcpWorkerServer();
-$simpleRpcServer->run(1337, $loop);
+$queue = new SplQueue();
+
+(new SimpleRpcServerHandler(
+    new LogableServerHandler(
+        'worker',
+        new WorkerServerHandler($queue)
+    )
+))
+    ->run(1337, $loop)
+;
 
 $loop->run();
