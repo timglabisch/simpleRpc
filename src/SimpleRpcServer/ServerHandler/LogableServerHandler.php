@@ -34,8 +34,8 @@ class LogableServerHandler extends AbstractWorkerServerHandler implements RpcSer
 
     public function onMessage(RpcClient $client, ReceivedRpcMessage $message)
     {
-        $this->log($client, "Got Message: ". $message->getBuffer());
-        $this->decorated->onConnection($client);
+        $this->log($client, "Got Message: ");//. $message->getBuffer());
+        $this->decorated->onMessage($client, $message);
     }
 
     public function onError(RpcClient $client, \Exception $exception)

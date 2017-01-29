@@ -4,6 +4,7 @@ namespace Tg\SimpleRPC\SimpleRPCServer;
 
 
 use React\Socket\ConnectionInterface;
+use React\Stream\DuplexStreamInterface;
 use Tg\SimpleRPC\ReceivedRpcMessage;
 use Tg\SimpleRPC\RpcMessage;
 
@@ -21,7 +22,7 @@ class RpcClient
      * RpcClient constructor.
      * @param ConnectionInterface $connection
      */
-    public function __construct($id, ConnectionInterface $connection)
+    public function __construct($id, DuplexStreamInterface $connection)
     {
         $this->id = $id;
         $this->connection = $connection;
@@ -76,7 +77,7 @@ class RpcClient
 
     public function __toString()
     {
-        return $this->connection->getRemoteAddress()." #".$this->getId();
+        return " #".$this->getId();
     }
 
 }

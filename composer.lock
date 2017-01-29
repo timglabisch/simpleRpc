@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c4d57d699ec7f5cdb78fb7b5f2dcac50",
+    "content-hash": "9e2360ef724f29c7ffaa5ba2eb5cd2e5",
     "packages": [
         {
             "name": "doctrine/instantiator",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "416fb8ad1d095a87f1d21bc40711843cd122fd4a"
+                "reference": "68099b02b60bbf3b088ff5cb67bf506770ef9cac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/416fb8ad1d095a87f1d21bc40711843cd122fd4a",
-                "reference": "416fb8ad1d095a87f1d21bc40711843cd122fd4a",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/68099b02b60bbf3b088ff5cb67bf506770ef9cac",
+                "reference": "68099b02b60bbf3b088ff5cb67bf506770ef9cac",
                 "shasum": ""
             },
             "require": {
@@ -58,7 +58,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2016-03-31 10:24:22"
+            "time": "2017-01-23 09:23:06"
         },
         {
             "name": "evenement/evenement",
@@ -112,12 +112,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/google/protobuf.git",
-                "reference": "047575f20cbdee8fb2f88d78a317ffe6133b93e6"
+                "reference": "a323f1e65da2c512f971a2edf1918a0cca340015"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/protobuf/zipball/047575f20cbdee8fb2f88d78a317ffe6133b93e6",
-                "reference": "047575f20cbdee8fb2f88d78a317ffe6133b93e6",
+                "url": "https://api.github.com/repos/google/protobuf/zipball/a323f1e65da2c512f971a2edf1918a0cca340015",
+                "reference": "a323f1e65da2c512f971a2edf1918a0cca340015",
                 "shasum": ""
             },
             "require": {
@@ -145,20 +145,20 @@
             "keywords": [
                 "proto"
             ],
-            "time": "2017-01-19 06:46:04"
+            "time": "2017-01-27 21:17:54"
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.5.5",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "399c1f9781e222f6eb6cc238796f5200d1b7f108"
+                "reference": "5a5a9fc8025a08d8919be87d6884d5a92520cefe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/399c1f9781e222f6eb6cc238796f5200d1b7f108",
-                "reference": "399c1f9781e222f6eb6cc238796f5200d1b7f108",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/5a5a9fc8025a08d8919be87d6884d5a92520cefe",
+                "reference": "5a5a9fc8025a08d8919be87d6884d5a92520cefe",
                 "shasum": ""
             },
             "require": {
@@ -187,7 +187,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2016-10-31T17:19:45+00:00"
+            "time": "2017-01-26T22:05:40+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -404,12 +404,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "2b731f13c9528a97d19fba7f4d8455c4fb54bd46"
+                "reference": "7a2bfe73aa381a76cb6d13599ae37bf74a12a02f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/2b731f13c9528a97d19fba7f4d8455c4fb54bd46",
-                "reference": "2b731f13c9528a97d19fba7f4d8455c4fb54bd46",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/7a2bfe73aa381a76cb6d13599ae37bf74a12a02f",
+                "reference": "7a2bfe73aa381a76cb6d13599ae37bf74a12a02f",
                 "shasum": ""
             },
             "require": {
@@ -459,7 +459,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-01-22 10:02:41"
+            "time": "2017-01-24 16:35:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -648,12 +648,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "87db7003eaccaf1dc49c201c8e24195c4e50e04f"
+                "reference": "22d8d19109921bd0b44f6114cec982ad644652c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/87db7003eaccaf1dc49c201c8e24195c4e50e04f",
-                "reference": "87db7003eaccaf1dc49c201c8e24195c4e50e04f",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/22d8d19109921bd0b44f6114cec982ad644652c0",
+                "reference": "22d8d19109921bd0b44f6114cec982ad644652c0",
                 "shasum": ""
             },
             "require": {
@@ -723,7 +723,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-01-22 18:19:09"
+            "time": "2017-01-27 05:09:59"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -783,6 +783,77 @@
                 "xunit"
             ],
             "time": "2016-12-08 20:27:08"
+        },
+        {
+            "name": "react/cache",
+            "version": "v0.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/cache.git",
+                "reference": "558f614891341b1d817a8cdf9a358948ec49638f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/cache/zipball/558f614891341b1d817a8cdf9a358948ec49638f",
+                "reference": "558f614891341b1d817a8cdf9a358948ec49638f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "react/promise": "~2.0|~1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "React\\Cache\\": "src\\"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Async caching.",
+            "keywords": [
+                "cache"
+            ],
+            "time": "2016-02-25T18:17:16+00:00"
+        },
+        {
+            "name": "react/dns",
+            "version": "v0.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/dns.git",
+                "reference": "751b3129556e04944f164e3556a20ca6e201e459"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/dns/zipball/751b3129556e04944f164e3556a20ca6e201e459",
+                "reference": "751b3129556e04944f164e3556a20ca6e201e459",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "react/cache": "~0.4.0|~0.3.0",
+                "react/promise": "~2.1|~1.2",
+                "react/socket": "~0.4.0|~0.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "React\\Dns\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Async DNS resolver.",
+            "keywords": [
+                "dns",
+                "dns-resolver"
+            ],
+            "time": "2016-08-01T10:09:07+00:00"
         },
         {
             "name": "react/event-loop",
@@ -872,17 +943,67 @@
             "time": "2016-12-22 14:09:01"
         },
         {
-            "name": "react/socket",
-            "version": "dev-master",
+            "name": "react/promise-timer",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/reactphp/socket.git",
-                "reference": "503874d790fd059b7e58a22b6d036c422c631a81"
+                "url": "https://github.com/reactphp/promise-timer.git",
+                "reference": "ddedc67bfd7f579fc83e66ff67e3564b179297dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/socket/zipball/503874d790fd059b7e58a22b6d036c422c631a81",
-                "reference": "503874d790fd059b7e58a22b6d036c422c631a81",
+                "url": "https://api.github.com/repos/reactphp/promise-timer/zipball/ddedc67bfd7f579fc83e66ff67e3564b179297dd",
+                "reference": "ddedc67bfd7f579fc83e66ff67e3564b179297dd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3",
+                "react/event-loop": "~0.4.0|~0.3.0",
+                "react/promise": "~2.1|~1.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "React\\Promise\\Timer\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Lück",
+                    "email": "christian@lueck.tv"
+                }
+            ],
+            "description": "Trivial timeout implementation for Promises",
+            "homepage": "https://github.com/react/promise-timer",
+            "keywords": [
+                "async",
+                "event-loop",
+                "promise",
+                "reactphp",
+                "timeout",
+                "timer"
+            ],
+            "time": "2016-12-27T08:12:19+00:00"
+        },
+        {
+            "name": "react/socket",
+            "version": "0.4.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/socket.git",
+                "reference": "cf074e53c974df52388ebd09710a9018894745d2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/socket/zipball/cf074e53c974df52388ebd09710a9018894745d2",
+                "reference": "cf074e53c974df52388ebd09710a9018894745d2",
                 "shasum": ""
             },
             "require": {
@@ -911,20 +1032,63 @@
             "keywords": [
                 "Socket"
             ],
-            "time": "2017-01-16 10:11:20"
+            "time": "2017-01-26 09:23:38"
         },
         {
-            "name": "react/stream",
-            "version": "v0.4.5",
+            "name": "react/socket-client",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/reactphp/stream.git",
-                "reference": "23389503012e1ab721ad498a5a1f4b39f7a43c00"
+                "url": "https://github.com/reactphp/socket-client.git",
+                "reference": "d7750159375ebad57a028b8355fee32f75090d4a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/stream/zipball/23389503012e1ab721ad498a5a1f4b39f7a43c00",
-                "reference": "23389503012e1ab721ad498a5a1f4b39f7a43c00",
+                "url": "https://api.github.com/repos/reactphp/socket-client/zipball/d7750159375ebad57a028b8355fee32f75090d4a",
+                "reference": "d7750159375ebad57a028b8355fee32f75090d4a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "react/dns": "0.4.*|0.3.*",
+                "react/event-loop": "0.4.*|0.3.*",
+                "react/promise": "^2.1 || ^1.2",
+                "react/promise-timer": "~1.0",
+                "react/stream": "^0.4.5"
+            },
+            "require-dev": {
+                "clue/block-react": "^1.1",
+                "phpunit/phpunit": "~4.8",
+                "react/socket": "^0.4.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "React\\SocketClient\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Async connector to open TCP/IP and SSL/TLS based connections.",
+            "keywords": [
+                "Socket"
+            ],
+            "time": "2017-01-15 10:10:08"
+        },
+        {
+            "name": "react/stream",
+            "version": "v0.4.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/stream.git",
+                "reference": "44dc7f51ea48624110136b535b9ba44fd7d0c1ee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/stream/zipball/44dc7f51ea48624110136b535b9ba44fd7d0c1ee",
+                "reference": "44dc7f51ea48624110136b535b9ba44fd7d0c1ee",
                 "shasum": ""
             },
             "require": {
@@ -955,7 +1119,7 @@
                 "pipe",
                 "stream"
             ],
-            "time": "2016-11-13T17:06:02+00:00"
+            "time": "2017-01-25T14:44:14+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

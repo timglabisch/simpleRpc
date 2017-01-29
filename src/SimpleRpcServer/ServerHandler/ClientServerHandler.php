@@ -6,14 +6,15 @@ namespace Tg\SimpleRPC\SimpleRPCServer\ServerHandler;
 use Tg\SimpleRPC\ReceivedRpcMessage;
 use Tg\SimpleRPC\SimpleRPCServer\RpcClient;
 use Tg\SimpleRPC\SimpleRPCServer\RpcServerHandlerInterface;
+use Tg\SimpleRPC\SimpleRPCServer\WorkQueue;
 
 class ClientServerHandler extends AbstractWorkerServerHandler implements RpcServerHandlerInterface
 {
-    /** @var \SplQueue */
+    /** @var WorkQueue */
     private $work;
 
     public function __construct(
-        \SplQueue $work
+        WorkQueue $work
     ) {
         $this->work = $work;
     }

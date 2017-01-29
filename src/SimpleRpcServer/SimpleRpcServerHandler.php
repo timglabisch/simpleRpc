@@ -5,6 +5,7 @@ namespace Tg\SimpleRPC\SimpleRPCServer;
 use Exception;
 use React\EventLoop\LoopInterface;
 use React\Socket\ConnectionInterface;
+use Tg\SimpleRPC\ReceivedRpcMessage;
 
 class SimpleRpcServerHandler
 {
@@ -29,6 +30,8 @@ class SimpleRpcServerHandler
 
             $client =  new RpcClient(++$this->clientIncrement, $worker);
 
+            $this->serverHandler->onConnection($client);
+
             $this->workerClients[] = $client;
 
             $worker->on('data', function ($data) use ($client) {
@@ -36,6 +39,10 @@ class SimpleRpcServerHandler
                 $client->pushBytes($data);
 
                 $messages = $client->resolveMessages();
+
+                if ($messages == ReceivedRpcMessage::STATE_NEEDS_MORE_BYTES) {
+                    echo "need more bytes, has ".strlen($client->getBuffer())."\n";
+                }
 
                 if (is_array($messages)) {
                     foreach ($messages as $message) {

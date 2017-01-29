@@ -4,6 +4,7 @@
     "require": {
         "google/protobuf": "*",
         "react/socket": "*",
+        "react/socket-client": "*",
         "phpunit/phpunit": "5.5.*"
     },
     "authors": [
