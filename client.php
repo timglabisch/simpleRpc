@@ -1,16 +1,11 @@
 <?php
 
 
-use React\SocketClient\TcpConnector;
 use Tg\SimpleRPC\ReceivedRpcMessage;
 use Tg\SimpleRPC\RpcMessage;
 use Tg\SimpleRPC\SimpleRPCClient\SimpleRpcClient;
 
 require __DIR__ . '/vendor/autoload.php';
-@require __DIR__ . '/foo/example.pb.php';
-
-
-
 
 
 $loop = React\EventLoop\Factory::create();

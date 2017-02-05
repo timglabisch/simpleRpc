@@ -7,8 +7,6 @@ use Tg\SimpleRPC\SimpleRPCWorker\WorkerReply;
 use Tg\SimpleRPC\SimpleRPCWorker\WorkerReplyInterface;
 
 require __DIR__ . '/vendor/autoload.php';
-@require __DIR__ . '/foo/example.pb.php';
-
 
 
 $loop = React\EventLoop\Factory::create();

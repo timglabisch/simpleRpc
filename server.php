@@ -9,11 +9,9 @@ use Tg\SimpleRPC\SimpleRPCServer\WorkQueue;
 use Tutorial\Person;
 
 require __DIR__ . '/vendor/autoload.php';
-@require __DIR__ . '/foo/example.pb.php';
 
 
 $loop = React\EventLoop\Factory::create();
-
 
 $queue = new WorkQueue();
 
