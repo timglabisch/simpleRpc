@@ -1,10 +1,10 @@
 <?php
 
-use React\Socket\ConnectionInterface;
-use React\SocketClient\TcpConnector;
 use Tg\SimpleRPC\ReceivedRpcMessage;
-use Tg\SimpleRPC\RpcMessage;
-use Tutorial\Person;
+use Tg\SimpleRPC\SimpleRPCWorker\RpcWorkHandlerInterface;
+use Tg\SimpleRPC\SimpleRPCWorker\SimpleRpcWorker;
+use Tg\SimpleRPC\SimpleRPCWorker\WorkerReply;
+use Tg\SimpleRPC\SimpleRPCWorker\WorkerReplyInterface;
 
 require __DIR__ . '/vendor/autoload.php';
 @require __DIR__ . '/foo/example.pb.php';
@@ -13,46 +13,16 @@ require __DIR__ . '/vendor/autoload.php';
 
 $loop = React\EventLoop\Factory::create();
 
-$tcpConnector = new TcpConnector($loop);
+(new SimpleRpcWorker($loop, '127.0.0.1:1337'))->run(
+    new class implements RpcWorkHandlerInterface {
 
-
-$tcpConnector->connect('127.0.0.1:1337')->then(function (React\Stream\Stream $stream) {
-
-    $i = 0;
-
-    $client = new \Tg\SimpleRPC\SimpleRPCServer\RpcClient(0, $stream);
-
-    $stream->on('error', function() {
-       $a = 0;
-    });
-
-    $stream->on('data', function ($data) use ($stream, $client, &$i) {
-        echo "on data\n";
-        $client->pushBytes($data);
-
-        $msgs = ReceivedRpcMessage::fromData($client);
-
-        if ($msgs == ReceivedRpcMessage::STATE_NEEDS_MORE_BYTES) {
-            echo "needs more bytes\n";
-            return;
+        public function onWork(ReceivedRpcMessage $message): WorkerReplyInterface
+        {
+            echo "do some work\n";
+            return new WorkerReply($message->getBuffer().' reply');
         }
 
-        if (!is_array($msgs)) {
-            echo "got bad message\n";
-            $stream->end();
-        }
+    }
+);
 
-        foreach ($msgs as $msg) {
-
-            echo "got message " . $msg->getBuffer() . "\n";
-            echo (++$i) . " send answer\n";
-
-
-            $stream->write((new RpcMessage($msg->getBuffer() . ' reply', 1337, 1, $msg->getId()))->encode());
-        }
-    });
-
-}, function() {
-    $a = 0;
-});
 $loop->run();

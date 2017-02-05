@@ -27,6 +27,8 @@ class ClientConnection
     /** @var PromisorInterface[] */
     private $messageQueue = [];
 
+    private $maxPendingRpcCalls;
+
     /** @return PromiseInterface */
     private function getClientPromise()
     {
@@ -82,14 +84,23 @@ class ClientConnection
         return $this->clientPromisor->promise();
     }
 
-    public function __construct(LoopInterface $loop, string $connectionsString)
+    public function __construct(LoopInterface $loop, string $connectionsString, int $maxPendingRpcCalls = 5000)
     {
         $this->loop = $loop;
         $this->connectionsString = $connectionsString;
+        $this->maxPendingRpcCalls = $maxPendingRpcCalls;
     }
 
     public function send(RpcMessage $message): PromiseInterface
     {
+        if (count($this->messageQueue) > $this->maxPendingRpcCalls) {
+            throw new \LogicException("
+                you have more than {$this->maxPendingRpcCalls} pending rpc calls.
+                this could become a memory issue.
+                may you forgot to call the run method on the loop or the server isn't ready?
+            ");
+        }
+
         if (!isset($this->messageQueue[$message->getId()])) {
             $this->messageQueue[$message->getId()] = new \React\Promise\Deferred();
             $this->getClientPromise()->then(function(RpcClient $client) use ($message) {
