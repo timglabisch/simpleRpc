@@ -23,19 +23,31 @@ class RpcMessage
 
     protected static $headerSize;
 
-    public function __construct($buffer, $protocolIdentifier = 1337, $version = 1)
+    private static $messageIdCounter = 0;
+
+    private $messageId;
+
+    public function __construct($buffer, $protocolIdentifier = 1337, $version = 1, $messageId = null)
     {
         $this->protocolIdentifier = $protocolIdentifier;
         $this->version = $version;
         $this->buffer = $buffer;
+        $this->messageId = $messageId === null ? static::$messageIdCounter++ : $messageId;
+    }
+
+    /** @return int */
+    public function getId()
+    {
+        return $this->messageId;
     }
 
     public static function getHeaderSize() {
         if (!static::$headerSize) {
             static::$headerSize = strlen($x = pack(
-                'nnN',
+                'nnNN',
                 1337,
                 1,
+                PHP_INT_MAX,
                 PHP_INT_MAX
             ));
         }
@@ -69,11 +81,11 @@ class RpcMessage
     
     public function encode(): string
     {
-
         return pack(
-            'nnN',
+            'nnNN',
             $this->protocolIdentifier,    // protocolIdentifier
             $this->version,    // protocolVersion
+            $this->getId(),    // messageId
             strlen($this->buffer) // byteCount
         ).$this->buffer;
     }

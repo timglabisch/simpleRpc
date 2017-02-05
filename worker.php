@@ -30,24 +30,26 @@ $tcpConnector->connect('127.0.0.1:1337')->then(function (React\Stream\Stream $st
         echo "on data\n";
         $client->pushBytes($data);
 
-        $msg = ReceivedRpcMessage::fromData($client);
+        $msgs = ReceivedRpcMessage::fromData($client);
 
-        if ($msg == ReceivedRpcMessage::STATE_NEEDS_MORE_BYTES) {
+        if ($msgs == ReceivedRpcMessage::STATE_NEEDS_MORE_BYTES) {
             echo "needs more bytes\n";
             return;
         }
 
-        if (!is_array($msg)) {
+        if (!is_array($msgs)) {
             echo "got bad message\n";
             $stream->end();
         }
 
-        echo "got message ".$msg[0]->getBuffer()."\n";
-        echo (++$i) ." send answer\n";
+        foreach ($msgs as $msg) {
+
+            echo "got message " . $msg->getBuffer() . "\n";
+            echo (++$i) . " send answer\n";
 
 
-
-        $stream->write((new RpcMessage("Send Answer"))->encode());
+            $stream->write((new RpcMessage($msg->getBuffer() . ' reply', 1337, 1, $msg->getId()))->encode());
+        }
     });
 
 }, function() {

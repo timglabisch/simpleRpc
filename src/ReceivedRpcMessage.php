@@ -14,10 +14,10 @@ class ReceivedRpcMessage extends RpcMessage
      * ReceivedRpcMessage constructor.
      * @param RpcClient $sender
      */
-    public function __construct(RpcClient $sender, $buffer, $protocolIdentifier = 1337, $version = 1)
+    public function __construct(RpcClient $sender, $buffer, $protocolIdentifier = 1337, $version = 1, $messageId = null)
     {
         $this->sender = $sender;
-        parent::__construct($buffer, $protocolIdentifier, $version);
+        parent::__construct($buffer, $protocolIdentifier, $version, $messageId);
     }
 
     /**
@@ -35,11 +35,12 @@ class ReceivedRpcMessage extends RpcMessage
                 return $messages ? $messages : static::STATE_NEEDS_MORE_BYTES;
             }
 
-            $unpacked = unpack('nprotocol/nversion/Nlength', substr($client->getBuffer(), 0, 8));
+            $unpacked = unpack('nprotocol/nversion/Nid/Nlength', substr($client->getBuffer(), 0, static::getHeaderSize()));
 
             if (!isset(
                 $unpacked['protocol'],
                 $unpacked['version'],
+                $unpacked['id'],
                 $unpacked['length']
             )) {
                 return static::STATE_MALFORMED;
@@ -57,6 +58,10 @@ class ReceivedRpcMessage extends RpcMessage
                 return static::STATE_MALFORMED;
             }
 
+            if (!is_int($unpacked['id'])) {
+                return static::STATE_MALFORMED;
+            }
+
             if (strlen($client->getBuffer()) < static::getHeaderSize() + $unpacked['length']) {
                 return $messages ? $messages : static::STATE_NEEDS_MORE_BYTES;
             }
@@ -67,7 +72,8 @@ class ReceivedRpcMessage extends RpcMessage
                 $client,
                 substr($message, static::getHeaderSize(), $unpacked['length']),
                 $unpacked['protocol'],
-                $unpacked['version']
+                $unpacked['version'],
+                $unpacked['id']
             );
         }
 
