@@ -14,7 +14,7 @@ $rpcClient = new SimpleRpcClient($loop, ['127.0.0.1:1338']);
 
 while(true) {
 
-    foreach (range(0, 550) as $x) {
+    foreach (range(0, 100) as $x) {
         $rand = mt_rand(0, PHP_INT_MAX);
         $rpcClient->send(new RpcMessage('Hello World '.$rand))->then(function (ReceivedRpcMessage $message) use ($rand) {
             if ($message->getBuffer() !== 'Hello World '.$rand.' reply') {

@@ -5,7 +5,8 @@
         "google/protobuf": "*",
         "react/socket": "*",
         "react/socket-client": "*",
-        "phpunit/phpunit": "5.5.*"
+        "phpunit/phpunit": "5.5.*",
+        "symfony/process": "^3.2"
     },
     "authors": [
         {
