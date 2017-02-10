@@ -41,4 +41,9 @@ class WorkQueue
         return $this->buffer->dequeue();
     }
 
+    public function count()
+    {
+        return $this->buffer->count();
+    }
+
 }
