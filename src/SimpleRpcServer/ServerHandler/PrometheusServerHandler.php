@@ -117,5 +117,7 @@ class PrometheusServerHandler implements RpcServerHandlerInterface
 
         $this->gaugePendingWork->set([], $this->workQueue->count());
         $this->gaugeActiveConnections->set([], $this->activeConnections);
+        
+        return $this->decorated->prepareMetrics();
     }
 }

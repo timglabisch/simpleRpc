@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="module_http_admin" class="Tg\SimpleRPC\SimpleRPCServer\Module\HttpAdminModule\HttpAdminModule">
+            <argument type="service" id="event_loop" />
+            <argument type="service" id="worker_server_handler" />
+            <argument type="service" id="client_server_handler" />
+            <argument type="service" id="prometheus_client" />
+            <tag name="module" />
+        </service>
+
+    </services>
+</container>

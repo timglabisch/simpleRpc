@@ -4,8 +4,9 @@ namespace Tg\SimpleRPC\SimpleRPCServer\ServerHandler;
 
 use Tg\SimpleRPC\ReceivedRpcMessage;
 use Tg\SimpleRPC\SimpleRPCServer\RpcClient;
+use Tg\SimpleRPC\SimpleRPCServer\RpcServerHandlerInterface;
 
-abstract class AbstractWorkerServerHandler
+abstract class AbstractServerHandler implements RpcServerHandlerInterface
 {
 
     function onMessage(RpcClient $client, ReceivedRpcMessage $message) {}
@@ -16,4 +17,6 @@ abstract class AbstractWorkerServerHandler
 
     function onClose(RpcClient $client) { }
 
+    public function prepareMetrics() {}
+    
 }

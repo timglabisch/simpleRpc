@@ -6,7 +6,7 @@ use Tg\SimpleRPC\ReceivedRpcMessage;
 use Tg\SimpleRPC\SimpleRPCServer\RpcClient;
 use Tg\SimpleRPC\SimpleRPCServer\RpcServerHandlerInterface;
 
-class LogableServerHandler extends AbstractWorkerServerHandler implements RpcServerHandlerInterface
+class LogableServerHandler implements RpcServerHandlerInterface
 {
     /** @var string */
     private $clientType;
@@ -48,6 +48,11 @@ class LogableServerHandler extends AbstractWorkerServerHandler implements RpcSer
     {
         $this->log($client, "Closed Connection.");
         $this->decorated->onClose($client);
+    }
+
+    public function prepareMetrics()
+    {
+        return $this->decorated->prepareMetrics();
     }
 
 }

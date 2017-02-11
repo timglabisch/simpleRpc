@@ -14,4 +14,6 @@ interface RpcServerHandlerInterface
 
     public function onClose(RpcClient $client);
 
+    public function prepareMetrics();
+
 }

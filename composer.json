@@ -8,7 +8,12 @@
         "phpunit/phpunit": "5.5.*",
         "symfony/process": "^3.2",
         "react/http": "^0.4.3",
-        "lazyshot/prometheus-php": "^0.2.0"
+        "lazyshot/prometheus-php": "^0.2.0",
+        "symfony/config": "^3.2",
+        "symfony/filesystem": "^3.2",
+        "symfony/dependency-injection": "^3.2",
+        "symfony/console": "^3.2",
+        "symfony/finder": "^3.2"
     },
     "authors": [
         {

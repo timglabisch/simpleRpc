@@ -1,66 +1,33 @@
 <?php
 
-use React\Socket\ConnectionInterface;
-use Tg\SimpleRPC\SimpleRPCServer\ServerHandler\ClientServerHandler;
-use Tg\SimpleRPC\SimpleRPCServer\ServerHandler\LogableServerHandler;
-use Tg\SimpleRPC\SimpleRPCServer\ServerHandler\PrometheusServerHandler;
-use Tg\SimpleRPC\SimpleRPCServer\ServerHandler\WorkerServerHandler;
-use Tg\SimpleRPC\SimpleRPCServer\SimpleRpcServerHandler;
-use Tg\SimpleRPC\SimpleRPCServer\WorkQueue;
-use Tutorial\Person;
+
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\Application;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Tg\SimpleRPC\SimpleRPCServer\CompilerPass\RpcServerCompilerPass;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$client = new \Prometheus\Client(['base_uri' => '-']);
+$container = new ContainerBuilder();
 
-$loop = React\EventLoop\Factory::create();
+$files = (new \Symfony\Component\Finder\Finder())->in(
+    [__DIR__. '/src/SimpleRpcServer/', __DIR__. '/src/SimpleRpcServer/Module/*/']
+)->name('services.xml')->files();
 
-$queue = new WorkQueue();
+/** @var $files \Symfony\Component\Finder\SplFileInfo[] */
+foreach($files as $file) {
+    (new XmlFileLoader($container, new FileLocator([$file->getPath()])))->load($file->getFilename());
+}
 
-(new SimpleRpcServerHandler(
-    $workerMetricServerHandler = new PrometheusServerHandler(
-        new LogableServerHandler('worker', new WorkerServerHandler($queue)),
-        $client,
-        'worker',
-        $queue
-    )
-))
-    ->run(1337, $loop)
+$container
+    ->addCompilerPass(new RpcServerCompilerPass())
+    ->compile()
 ;
 
-(new SimpleRpcServerHandler(
-    $clientMetricServerHandler = new PrometheusServerHandler(
-        new LogableServerHandler('client', new ClientServerHandler($queue)),
-        $client,
-        'client',
-        $queue
-    )
-))
-    ->run(1338, $loop)
-;
-
-
-$socket = new React\Socket\Server($loop);
-$http = new React\Http\Server($socket);
-/** @var $memoryGauge \Prometheus\Gauge */
-$memoryGauge = $client->newGauge(['namespace' => 'php', 'name' => 'Memory', 'help' => 'Memory...']);
-$cpuGauge = $client->newGauge(['namespace' => 'php', 'name' => 'CPU', 'help' => 'CPU...']);
-$http->on('request', function ($request, $response) use (
-    $client,
-    $workerMetricServerHandler,
-    $clientMetricServerHandler,
-    $memoryGauge,
-    $cpuGauge
-) {
-    $memoryGauge->set([], memory_get_usage(true));
-    $memoryGauge->set([], sys_getloadavg()[0]);
-    $workerMetricServerHandler->prepareMetrics();
-    $clientMetricServerHandler->prepareMetrics();
-
-    $response->writeHead(200, array('Content-Type' => 'text/plain'));
-    $response->end($client->serialize());
-});
-
-$socket->listen(3333);
-
-$loop->run();
+$container->set('container', $container);
+$application = new Application();
+$application->add($container->get('command_start_angel'));
+$application->add($container->get('command_start_server'));
+$application->setDefaultCommand('server');
+$application->run();

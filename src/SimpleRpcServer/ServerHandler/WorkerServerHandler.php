@@ -9,7 +9,7 @@ use Tg\SimpleRPC\SimpleRPCServer\RpcClient;
 use Tg\SimpleRPC\SimpleRPCServer\RpcServerHandlerInterface;
 use Tg\SimpleRPC\SimpleRPCServer\WorkQueue;
 
-class WorkerServerHandler extends AbstractWorkerServerHandler implements RpcServerHandlerInterface
+class WorkerServerHandler extends AbstractServerHandler implements RpcServerHandlerInterface
 {
     /** @var WorkQueue */
     private $workQueue;

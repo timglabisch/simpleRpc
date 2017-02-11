@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="container" synthetic="true" />
+
+        <service id="command_start_server" class="Tg\SimpleRPC\SimpleRPCServer\Command\StartServerCommand">
+            <argument type="service" id="event_loop"/>
+            <argument type="service" id="client_server_handler"/>
+            <argument type="service" id="worker_server_handler"/>
+            <argument type="service" id="work_queue"/>
+        </service>
+
+        <service id="prometheus_client" class="Prometheus\Client">
+            <argument type="collection">
+                <argument key="base_uri">-</argument>
+            </argument>
+        </service>
+
+        <service id="command_start_angel" class="Tg\SimpleRPC\SimpleRPCServer\Command\StartAngelCommand" autowire="true" />
+
+        <service id="event_loop" class="React\EventLoop\StreamSelectLoop">
+            <factory class="React\EventLoop\Factory" method="create"/>
+        </service>
+
+        <service id="work_queue" class="Tg\SimpleRPC\SimpleRPCServer\WorkQueue"/>
+
+        <service id="worker_server_handler" class="Tg\SimpleRPC\SimpleRPCServer\ServerHandler\WorkerServerHandler">
+            <argument type="service" id="work_queue"/>
+        </service>
+
+        <service id="worker_server_handler_logable_decorator" class="Tg\SimpleRPC\SimpleRPCServer\ServerHandler\LogableServerHandler" decorates="worker_server_handler">
+            <argument type="string">worker</argument>
+            <argument type="service" id="worker_server_handler_logable_decorator.inner"/>
+        </service>
+
+        <service id="worker_server_handler_prometeus_decorator" class="Tg\SimpleRPC\SimpleRPCServer\ServerHandler\PrometheusServerHandler" decorates="worker_server_handler_logable_decorator">
+            <argument type="service" id="worker_server_handler_prometeus_decorator.inner"/>
+            <argument type="service" id="prometheus_client"/>
+            <argument type="string">worker</argument>
+            <argument type="service" id="work_queue"/>
+        </service>
+
+
+        <service id="client_server_handler" class="Tg\SimpleRPC\SimpleRPCServer\ServerHandler\ClientServerHandler">
+            <argument type="service" id="work_queue"/>
+        </service>
+
+        <service id="client_server_handler_logable_decorator" class="Tg\SimpleRPC\SimpleRPCServer\ServerHandler\LogableServerHandler" decorates="client_server_handler">
+            <argument type="string">client</argument>
+            <argument type="service" id="client_server_handler_logable_decorator.inner"/>
+        </service>
+
+        <service id="client_server_handler_prometeus_decorator" class="Tg\SimpleRPC\SimpleRPCServer\ServerHandler\PrometheusServerHandler" decorates="client_server_handler_logable_decorator">
+            <argument type="service" id="client_server_handler_prometeus_decorator.inner"/>
+            <argument type="service" id="prometheus_client"/>
+            <argument type="string">client</argument>
+            <argument type="service" id="work_queue"/>
+        </service>
+
+    </services>
+</container>
