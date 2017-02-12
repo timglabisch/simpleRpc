@@ -6,5 +6,5 @@ namespace Tg\SimpleRPC\SimpleRPCServer\Module;
 
 interface ModuleInterface
 {
-    public function run();
+    public function run(array $arguments);
 }

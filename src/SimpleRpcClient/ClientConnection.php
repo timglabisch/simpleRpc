@@ -34,7 +34,7 @@ class ClientConnection
     {
         if (!$this->clientPromisor) {
             $this->clientPromisor = new \React\Promise\Deferred();
-            $connection = (new TcpConnector($this->loop))->connect('127.0.0.1:1338');
+            $connection = (new TcpConnector($this->loop))->connect($this->connectionsString);
             $connection->then(function (Stream $stream) {
 
                 $client = new RpcClient(mt_rand(), $stream);

@@ -3,86 +3,85 @@
 namespace Tg\SimpleRPC\SimpleRpcAngel;
 
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
+use Tg\SimpleRPC\SimpleRPCServer\Angel\ProtectedServer;
+use Tg\SimpleRPC\SimpleRPCServer\Angel\ProtectedWorker;
 
 class SimpleRpcAngel
 {
-    /** @var Process[] */
-    private $servers = [];
+    private $startPortWorker = 1390;
 
-    /** @var Process[] */
-    private $workers = [];
+    private $startAdminPort = 1190;
 
-    /** @var int */
-    private $numServers;
 
-    /** @var int */
-    private $numWorkers;
-
-    public function __construct(int $numServers = 1, int $numWorkers = 10)
+    private function startServer(int $portServer, int $numWorkers): ProtectedServer
     {
-        $this->numServers = $numServers;
-        $this->numWorkers = $numWorkers;
-    }
+        $portAdmin = $this->startAdminPort++;
+        $portWorker = $this->startPortWorker++;
 
-    private function startServer()
-    {
-        $process = new Process('php server.php > /dev/null', null, [], null, 100);
+        $process = new Process($x = 'php server.php server --port-client='. $portServer .'  --port-worker='. $portWorker .'  --port-admin='. $portAdmin.' > /dev/null');
         $process->start();
 
-        return $process;
+        $workers = array_map(function() use ($portWorker, $process) {
+            // todo, why is this needed?
+            sleep(1);
+
+            $processBuilder = new ProcessBuilder(['php','worker.php']);
+            $processBuilder->setEnv('RPC_SERVER', '127.0.0.1:'.$portWorker);
+            $workerProcess = $processBuilder->getProcess();
+            $workerProcess->start();
+
+            return new ProtectedWorker($workerProcess);
+        }, range(1, $numWorkers));
+
+        return new ProtectedServer($portServer, $portWorker, $portAdmin, $process, $workers);
     }
 
-    private function startWorker()
-    {
-        $process = new Process('php worker.php > /dev/null', null, [], null, 100);
-        $process->start();
 
-        return $process;
-    }
+    public function run(array $serverPorts, int $numWorkers) {
 
-    private function runServers() {
-
-    }
-
-    public function run() {
-
-        foreach (range(1, $this->numServers) as $i) {
-            $this->servers[] = $this->startServer();
-        }
-
-        foreach (range(1, $this->numWorkers) as $i) {
-            $this->workers[] = $this->startWorker();
-        }
+        /** @var $servers ProtectedServer[] */
+        $servers = array_map(function(int $serverPort) use ($numWorkers) {
+            return $this->startServer($serverPort, $numWorkers);
+        }, $serverPorts);
 
         while (true) {
 
-            foreach ($this->servers as $k => $v) {
+            foreach ($servers as $server) {
 
-                // echo $v->getOutput();
+                echo $server->getProcess()->getOutput();
+                echo $server->getProcess()->getErrorOutput();
+                $server->getProcess()->clearErrorOutput();
+                $server->getProcess()->clearOutput();
 
-                if (!$v->isTerminated()) {
-                    echo "Server {$v->getPid()} is running.\n";
+                if (!$server->getProcess()->isTerminated()) {
+                    echo "{$server->getName()} is running.\n";
                     continue;
                 }
 
-                echo "restart Server\n";
-                $this->servers[$k] = $this->startServer();
-
+                echo $server->getProcess()->getOutput();
+                echo "restart {$server->getName()}\n";
+                $server->getProcess()->restart();
             }
 
+            foreach ($servers as $server) {
+                foreach ($server->getWorkers() as $worker) {
+                    if (!$worker->getProcess()->isTerminated()) {
+                        echo ".";
+                        continue;
+                    }
 
-            foreach ($this->workers as $k => $v) {
+                    echo $worker->getProcess()->getOutput();
+                    echo $worker->getProcess()->getErrorOutput();
+                    $worker->getProcess()->clearErrorOutput();
+                    $worker->getProcess()->clearOutput();
 
-                // echo $v->getOutput();
-
-                if (!$v->isTerminated()) {
-                    echo "Worker {$v->getPid()} is started.\n";
-                    continue;
+                    echo "{$server->getName()}\n";
+                    echo "\t{$worker->getName()} restarted\n";
+                    $worker->getProcess()->restart();
                 }
-
-                echo "restart Worker\n";
-                $this->workers[$k] = $this->startWorker();
             }
+            echo "\n";
 
             sleep(3);
         }

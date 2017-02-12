@@ -11,7 +11,8 @@ require __DIR__ . '/vendor/autoload.php';
 
 $loop = React\EventLoop\Factory::create();
 
-(new SimpleRpcWorker($loop, '127.0.0.1:1337'))->run(
+
+(new SimpleRpcWorker($loop, $_SERVER['RPC_SERVER']))->run(
     new class implements RpcWorkHandlerInterface {
 
         public function onWork(ReceivedRpcMessage $message): WorkerReplyInterface

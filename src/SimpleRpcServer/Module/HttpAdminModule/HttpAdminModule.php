@@ -36,7 +36,7 @@ class HttpAdminModule implements ModuleInterface
     }
 
 
-    public function run()
+    public function run(array $arguments)
     {
         $socket = new \React\Socket\Server($this->loop);
         $http = new \React\Http\Server($socket);
@@ -57,7 +57,7 @@ class HttpAdminModule implements ModuleInterface
             $response->end($this->prometheusClient->serialize());
         });
 
-        $socket->listen(3333);
+        $socket->listen($arguments['port-admin']);
     }
 
 }
