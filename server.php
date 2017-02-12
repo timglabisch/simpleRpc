@@ -12,7 +12,7 @@ require __DIR__ . '/vendor/autoload.php';
 $container = new ContainerBuilder();
 
 $files = (new \Symfony\Component\Finder\Finder())->in(
-    [__DIR__. '/src/SimpleRpcServer/', __DIR__. '/src/SimpleRpcServer/Module/*/']
+    [__DIR__. '/src/SimpleRPCServer/', __DIR__. '/src/SimpleRPCServer/Module/*/']
 )->name('services.xml')->files();
 
 /** @var $files \Symfony\Component\Finder\SplFileInfo[] */
