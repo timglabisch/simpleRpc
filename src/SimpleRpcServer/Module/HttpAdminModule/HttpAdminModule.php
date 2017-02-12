@@ -57,7 +57,7 @@ class HttpAdminModule implements ModuleInterface
             $response->end($this->prometheusClient->serialize());
         });
 
-        $socket->listen($arguments['port-admin']);
+        $socket->listen($arguments['port-admin'], '0.0.0.0');
     }
 
 }

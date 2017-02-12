@@ -70,8 +70,8 @@ class PrometheusServerHandler implements RpcServerHandlerInterface
         $this->counterOnMessages = $client->newCounter(['namespace' => $namespace, 'name' => 'message', 'help' => 'message...']);
         $this->counterOnErrors = $client->newCounter(['namespace' => $namespace, 'name' => 'error', 'help' => 'error...']);
         $this->counterOnCloses = $client->newCounter(['namespace' => $namespace, 'name' => 'close', 'help' => 'close...']);
-        $this->gaugeActiveConnections = $client->newGauge(['namespace' => $namespace, 'name' => 'active connections', 'help' => 'active connections...']);
-        $this->gaugePendingWork = $client->newGauge(['namespace' => $namespace, 'name' => 'pending work', 'help' => 'pending work...']);
+        $this->gaugeActiveConnections = $client->newGauge(['namespace' => $namespace, 'name' => 'active_connections', 'help' => 'active connections...']);
+        $this->gaugePendingWork = $client->newGauge(['namespace' => $namespace, 'name' => 'pending_work', 'help' => 'pending work...']);
     }
 
     public function onConnection(RpcClient $client)
