@@ -64,7 +64,7 @@ class SimpleRpcServerHandler
 
         });
 
-        $socket->listen($port);
+        $socket->listen($port, '0.0.0.0');
     }
 
 }
