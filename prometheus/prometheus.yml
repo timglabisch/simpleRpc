@@ -9,15 +9,15 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'c1'
-    scrape_interval: 3s
-    static_configs:
-      - targets: ['192.168.0.87:1190', '192.168.0.87:1191', '192.168.0.87:1192', '192.168.0.87:1193']
+# - job_name: 'c1'
+#  scrape_interval: 3s
+#  static_configs:
+#    - targets: ['192.168.0.87:1190', '192.168.0.87:1191', '192.168.0.87:1192', '192.168.0.87:1193']
 
-  - job_name: 'c2'
-    scrape_interval: 3s
-    static_configs:
-      - targets: ['192.168.0.141:1190', '192.168.0.141:1191', '192.168.0.141:1192', '192.168.0.141:1193']
+#- job_name: 'c2'
+#  scrape_interval: 3s
+#  static_configs:
+#    - targets: ['192.168.0.141:1190', '192.168.0.141:1191', '192.168.0.141:1192', '192.168.0.141:1193']
 
   - job_name: 'c3'
     scrape_interval: 3s

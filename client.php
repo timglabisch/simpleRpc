@@ -10,7 +10,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 $loop = React\EventLoop\Factory::create();
 
-$rpcClient = new SimpleRpcClient($loop, [$_SERVER['RPC_SERVER']]);
+$rpcClient = new SimpleRpcClient($loop, ['http://172.20.20.10:8500']);
 
 while(true) {
 

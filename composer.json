@@ -13,7 +13,8 @@
         "symfony/filesystem": "^3.2",
         "symfony/dependency-injection": "^3.2",
         "symfony/console": "^3.2",
-        "symfony/finder": "^3.2"
+        "symfony/finder": "^3.2",
+        "sensiolabs/consul-php-sdk": "^2.0"
     },
     "authors": [
         {
