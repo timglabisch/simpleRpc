@@ -1,0 +1,19 @@
+---
+- name: fetch and unarchive consul
+  unarchive:
+    src: 'https://releases.hashicorp.com/consul/{{ consul_demo_version }}/consul_{{ consul_demo_version }}_linux_amd64.zip'
+    dest: /usr/bin/
+    remote_src: true
+
+- name: esnure consul executable
+  acl:
+    path: /usr/bin/consul
+    etype: user
+    permissions: rwx
+    state: present
+
+- name: ensure cosul.d directory exists
+  file:
+    path: /etc/consul.d
+    state: directory
+    mode: 0775

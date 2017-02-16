@@ -1,0 +1,7 @@
+[node]
+n1 ansible_ssh_host=172.20.20.10 ansible_ssh_private_key_file=.vagrant/machines/n1/virtualbox/private_key
+n2 ansible_ssh_host=172.20.20.11 ansible_ssh_private_key_file=.vagrant/machines/n2/virtualbox/private_key
+
+[node:vars]
+ansible_connection=ssh
+ansible_user=vagrant
