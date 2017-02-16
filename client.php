@@ -3,6 +3,7 @@
 
 use Tg\SimpleRPC\ReceivedRpcMessage;
 use Tg\SimpleRPC\RpcMessage;
+use Tg\SimpleRPC\SimpleRPCClient\ServiceDiscovery\ConsulServiceDiscovery;
 use Tg\SimpleRPC\SimpleRPCClient\SimpleRpcClient;
 
 require __DIR__ . '/vendor/autoload.php';
@@ -10,7 +11,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 $loop = React\EventLoop\Factory::create();
 
-$rpcClient = new SimpleRpcClient($loop, ['http://172.20.20.10:8500']);
+$rpcClient = new SimpleRpcClient($loop, new ConsulServiceDiscovery(['http://172.20.20.10:8500'], 2));
 
 while(true) {
 

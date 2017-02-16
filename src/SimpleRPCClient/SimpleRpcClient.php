@@ -5,67 +5,48 @@ namespace Tg\SimpleRPC\SimpleRPCClient;
 use React\EventLoop\LoopInterface;
 use SensioLabs\Consul\Services\Catalog;
 use Tg\SimpleRPC\RpcMessage;
+use Tg\SimpleRPC\SimpleRPCClient\ServiceDiscovery\ServiceDiscoveryInterface;
 
 class SimpleRpcClient
 {
 
-    /** @var ClientConnection[] */
-    static $connections = null;
-
     /** @var LoopInterface */
     private $loop;
 
-    /** @var string[] */
-    private $consuls = [];
+    /** @var ServiceDiscoveryInterface */
+    private $serviceDiscovery;
 
-    /**
-     * SimpleRpcClient constructor.
-     * @param ClientConnection[] $connections
-     */
-    public function __construct(LoopInterface $loop, array $consuls)
+    /** @var ClientConnection[] */
+    private $connections = [];
+
+    /** @param ClientConnection[] $connections */
+    public function __construct(
+        LoopInterface $loop,
+        ServiceDiscoveryInterface $serviceDiscovery
+    )
     {
         $this->loop = $loop;
-        $this->consuls = $consuls;
+        $this->serviceDiscovery = $serviceDiscovery;
     }
 
-    private function initializeConnections()
+    private function getClientConnection(): ClientConnection
     {
-        if (static::$connections !== null) {
-            return;
+        $connectionString = $this->serviceDiscovery->getConnectionString();
+
+        if (!isset($this->connections[$connectionString])) {
+            $this->connections[$connectionString] = new ClientConnection(
+                $this->loop,
+                $connectionString
+            );
         }
 
-        $this->loadEndpointsFromConsul();
-
-        static::$connections = array_map(function(array $connection) {
-            return new ClientConnection($this->loop, $connection['ServiceAddress'].':'.$connection['ServicePort']);
-        }, $this->loadEndpointsFromConsul());
+        return $this->connections[$connectionString];
     }
 
     /** @return \React\Promise\PromiseInterface */
-    public function send(RpcMessage $message) {
-        $this->initializeConnections();
-        return static::$connections[array_rand(static::$connections)]->send($message);
-    }
-
-    private function loadEndpointsFromConsul()
+    public function send(RpcMessage $message)
     {
-        foreach ($this->consuls as $consul) {
-            $sf = new \SensioLabs\Consul\ServiceFactory(
-                [
-                    'base_uri' => $consul,
-                ]
-            );
-            /** @var $catalog Catalog */
-            $catalog = $sf->get('catalog');
-            $services = $catalog->service('RPC-Server')->json();
-
-            if (is_array($services)) {
-                return $services;
-            }
-        }
-
-        return [];
+        return $this->getClientConnection()->send($message);
     }
-
 
 }
