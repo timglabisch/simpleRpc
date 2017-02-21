@@ -26,6 +26,9 @@
     "autoload": {
         "psr-4": {
             "Tg\\SimpleRPC\\": "src/"
-        }
+        },
+        "files": [
+            "src/SimpleRPCMessage/GeneratedAutoloader.php"
+        ]
     }
 }

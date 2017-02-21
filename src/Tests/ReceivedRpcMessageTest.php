@@ -6,6 +6,7 @@ use PHPUnit_Framework_TestCase;
 use React\Socket\ConnectionInterface;
 use Tg\SimpleRPC\ReceivedRpcMessage;
 use Tg\SimpleRPC\RpcMessage;
+use Tg\SimpleRPC\SimpleRPCMessage\Generated\RpcClientHeaderRequest;
 use Tg\SimpleRPC\SimpleRPCServer\RpcClient;
 
 class ReceivedRpcMessageTest extends PHPUnit_Framework_TestCase
@@ -15,7 +16,9 @@ class ReceivedRpcMessageTest extends PHPUnit_Framework_TestCase
     {
         $client = new RpcClient(123, $this->prophesize(ConnectionInterface::class)->reveal());
 
-        $message = new RpcMessage("fooo");
+        $header = new RpcClientHeaderRequest();
+        $header->setMethod('foobar');
+        $message = new RpcMessage("fooo", $header);
         $client->pushBytes($message->encode());
 
         $receivedMessages = ReceivedRpcMessage::fromData($client);
@@ -24,14 +27,15 @@ class ReceivedRpcMessageTest extends PHPUnit_Framework_TestCase
         static::assertCount(1, $receivedMessages);
 
         $this->assertEquals('fooo', $receivedMessages[0]->getBuffer());
+        $this->assertEquals('foobar', $receivedMessages[0]->getHeader()->getMethod());
     }
 
     public function testEncodeDecodeMultiMessage()
     {
         $client = new RpcClient(123, $this->prophesize(ConnectionInterface::class)->reveal());
 
-        $client->pushBytes((new RpcMessage("fooo1"))->encode());
-        $client->pushBytes((new RpcMessage("fooo2"))->encode());
+        $client->pushBytes((new RpcMessage("fooo1", new RpcClientHeaderRequest()))->encode());
+        $client->pushBytes((new RpcMessage("fooo2", new RpcClientHeaderRequest()))->encode());
 
         $receivedMessages = ReceivedRpcMessage::fromData($client);
 
@@ -46,7 +50,7 @@ class ReceivedRpcMessageTest extends PHPUnit_Framework_TestCase
     {
         $client = new RpcClient(123, $this->prophesize(ConnectionInterface::class)->reveal());
 
-        $message = (new RpcMessage("fooo"))->encode();
+        $message = (new RpcMessage("fooo", new RpcClientHeaderRequest()))->encode();
 
         for($i=0; $i < strlen($message); $i++) {
             $x = ReceivedRpcMessage::fromData($client);

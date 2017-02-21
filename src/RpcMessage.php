@@ -2,6 +2,8 @@
 
 namespace Tg\SimpleRPC;
 
+use Google\Protobuf\Internal\Message;
+use Tg\SimpleRPC\SimpleRPCMessage\Generated\RpcClientHeaderRequest;
 use Tg\SimpleRPC\SimpleRPCServer\RpcClient;
 
 class RpcMessage
@@ -27,9 +29,18 @@ class RpcMessage
 
     private $messageId;
 
-    public function __construct($buffer, $protocolIdentifier = 1337, $version = 1, $messageId = null)
-    {
+    /** @var Message */
+    private $header;
+
+    public function __construct(
+        $buffer,
+        Message $header,
+        $protocolIdentifier = 1337,
+        $version = 1,
+        $messageId = null
+    ) {
         $this->protocolIdentifier = $protocolIdentifier;
+        $this->header = $header;
         $this->version = $version;
         $this->buffer = $buffer;
         $this->messageId = $messageId === null ? static::$messageIdCounter++ : $messageId;
@@ -44,9 +55,10 @@ class RpcMessage
     public static function getHeaderSize() {
         if (!static::$headerSize) {
             static::$headerSize = strlen($x = pack(
-                'nnNN',
+                'nnNNN',
                 1337,
                 1,
+                PHP_INT_MAX,
                 PHP_INT_MAX,
                 PHP_INT_MAX
             ));
@@ -81,13 +93,24 @@ class RpcMessage
     
     public function encode(): string
     {
+        $encodedHeader = $this->header->encode();
+
         return pack(
-            'nnNN',
+            'nnNNN',
             $this->protocolIdentifier,    // protocolIdentifier
             $this->version,    // protocolVersion
             $this->getId(),    // messageId
-            strlen($this->buffer) // byteCount
-        ).$this->buffer;
+            strlen($encodedHeader), // HeaderCount
+            strlen($this->buffer) // MessageCount
+        ).$encodedHeader.$this->buffer;
     }
+
+    /** @return Message */
+    public function getHeader()
+    {
+        return $this->header;
+    }
+
+
     
 }
