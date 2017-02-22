@@ -7,6 +7,7 @@ use React\SocketClient\TcpConnector;
 use React\Stream\Stream;
 use Tg\SimpleRPC\ReceivedRpcMessage;
 use Tg\SimpleRPC\RpcMessage;
+use Tg\SimpleRPC\SimpleRPCMessage\Generated\RpcClientHeaderResponse;
 
 class SimpleRpcWorker
 {
@@ -50,7 +51,7 @@ class SimpleRpcWorker
                 foreach ($msgs as $msg) {
                     $response = $workHandler->onWork($msg);
 
-                    $stream->write((new RpcMessage($response->toBytes(), 1337, 1, $msg->getId()))->encode());
+                    $stream->write((new RpcMessage($response->toBytes(), new RpcClientHeaderResponse(), 1337, 1, $msg->getId()))->encode());
                 }
             });
 

@@ -11,21 +11,9 @@ use Google\Protobuf\Internal\GPBUtil;
 
 class RpcClientHeaderRequest extends \Google\Protobuf\Internal\Message
 {
-    private $messageId = 0;
     private $datetime = 0;
     private $method = '';
     private $repeatable = false;
-
-    public function getMessageId()
-    {
-        return $this->messageId;
-    }
-
-    public function setMessageId($var)
-    {
-        GPBUtil::checkUint32($var);
-        $this->messageId = $var;
-    }
 
     public function getDatetime()
     {
@@ -67,15 +55,62 @@ class RpcClientHeaderResponse extends \Google\Protobuf\Internal\Message
 
 }
 
+class Person extends \Google\Protobuf\Internal\Message
+{
+    private $firstname = '';
+    private $lastname = '';
+
+    public function getFirstname()
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname($var)
+    {
+        GPBUtil::checkString($var, True);
+        $this->firstname = $var;
+    }
+
+    public function getLastname()
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname($var)
+    {
+        GPBUtil::checkString($var, True);
+        $this->lastname = $var;
+    }
+
+}
+
+class Person_Foo extends \Google\Protobuf\Internal\Message
+{
+    private $bar = '';
+
+    public function getBar()
+    {
+        return $this->bar;
+    }
+
+    public function setBar($var)
+    {
+        GPBUtil::checkString($var, True);
+        $this->bar = $var;
+    }
+
+}
+
 $pool = DescriptorPool::getGeneratedPool();
 
 $pool->internalAddGeneratedFile(hex2bin(
-    "0aba010a097270632e70726f746f122754672e53696d706c655250432e53" .
-    "696d706c655250434d6573736167652e47656e65726174656422610a1652" .
-    "7063436c69656e744865616465725265717565737412110a096d65737361" .
-    "6765496418012001280d12100a086461746574696d65180220012804120e" .
-    "0a066d6574686f6418032001280912120a0a72657065617461626c651804" .
-    "2001280822190a17527063436c69656e74486561646572526573706f6e73" .
-    "65620670726f746f33"
+    "0aea010a097270632e70726f746f122754672e53696d706c655250432e53" .
+    "696d706c655250434d6573736167652e47656e657261746564224e0a1652" .
+    "7063436c69656e744865616465725265717565737412100a086461746574" .
+    "696d65180120012804120e0a066d6574686f6418022001280912120a0a72" .
+    "657065617461626c6518032001280822190a17527063436c69656e744865" .
+    "61646572526573706f6e736522410a06506572736f6e12110a0966697273" .
+    "746e616d6518012001280912100a086c6173746e616d651802200128091a" .
+    "120a03466f6f120b0a03626172180120012809620670726f746f33"
 ));
 

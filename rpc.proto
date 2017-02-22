@@ -3,11 +3,19 @@ syntax = "proto3";
 package Tg.SimpleRPC.SimpleRPCMessage.Generated;
 
 message RpcClientHeaderRequest {
-    uint32 messageId = 1;
-    uint64 datetime = 2;
-    string method = 3;
-    bool repeatable = 4;
+    uint64 datetime = 1;
+    string method = 2;
+    bool repeatable = 3;
 }
 
 message RpcClientHeaderResponse {
+}
+
+message Person {
+    string firstname = 1;
+    string lastname = 2;
+
+    message Foo {
+        string bar = 1;
+    }
 }
