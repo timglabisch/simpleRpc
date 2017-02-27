@@ -9,7 +9,7 @@ class RPCCodecMessageV1
     /** @var int */
     private $id;
 
-    /** @var string|null */
+    /** @var string */
     private $header;
 
     /** @var string */
@@ -18,7 +18,7 @@ class RPCCodecMessageV1
     /** @var string */
     private $type;
 
-    public function __construct(int $id, string $header, string $body, $type)
+    public function __construct(int $id, string $header, string $body, int $type)
     {
         $this->id = $id;
         $this->header = $header;
@@ -41,7 +41,7 @@ class RPCCodecMessageV1
         return $this->body;
     }
 
-    public function getType(): string
+    public function getType(): int
     {
         return $this->type;
     }

@@ -7,7 +7,7 @@ class EasyBuf
 {
     private $buffer;
 
-    public function __construct(array &$buffer)
+    public function __construct(string &$buffer)
     {
         $this->buffer = $buffer;
     }
@@ -19,7 +19,7 @@ class EasyBuf
 
     public function hasLen(int $expectedLen)
     {
-        return $this->len() < $expectedLen;
+        return $this->len() <= $expectedLen;
     }
 
     public function look_at_next_bytes(int $bytes)

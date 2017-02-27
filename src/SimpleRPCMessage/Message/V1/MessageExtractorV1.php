@@ -19,6 +19,11 @@ use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfigurationResponse;
 
 class MessageExtractorV1 implements MessageExtractorInterface
 {
+    public function supports($message): bool
+    {
+        return $message instanceof RPCCodecMessageV1;
+    }
+
     /**
      * @param RPCCodecMessageV1 $message
      * @return MessageRPCPing|MessageRPCPong|MessageRPCRequest|MessageRPCResponse|MessageRPCWorkerConfigurationRequest|MessageRPCWorkerConfigurationResponse

@@ -4,12 +4,14 @@
     <testsuites>
         <testsuite name="Tests">
             <directory suffix="Test.php">./src/Tests/</directory>
+            <directory suffix="Test.php">./src/*/Tests/</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
             <exclude>
                 <directory>./src/Tests</directory>
+                <directory>./src/*/Tests</directory>
             </exclude>
             <directory>./src</directory>
         </whitelist>

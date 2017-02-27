@@ -12,6 +12,8 @@ class RPCCodecV1 implements CodecDecodeInterface, CodecEncodeInterface
 {
     const PROTOCOL_IDENTIFIER = 1337;
 
+    const PROTOCOL_VERSION = 1;
+
     const TYPE_RPC_REQUEST = 1;
 
     const TYPE_RPC_RESPONSE = 2;
@@ -46,11 +48,11 @@ class RPCCodecV1 implements CodecDecodeInterface, CodecEncodeInterface
 
     public function supportsDecode(EasyBuf $easyBuf)
     {
-        if ($easyBuf->hasLen(static::getHeaderSize())) {
+        if (!$easyBuf->hasLen(static::getHeaderSize())) {
             return CodecDecodeInterface::SUPPORTS_NEEDS_MORE_BYTES;
         }
 
-        if ($easyBuf->unpack_next_bytes(2, 'nn') === [1337, 1]) {
+        if (array_values($easyBuf->unpack_next_bytes(4, 'na/nb')) === [static::PROTOCOL_IDENTIFIER, static::PROTOCOL_VERSION]) {
             return CodecDecodeInterface::SUPPORTS_YES;
         }
 
@@ -85,21 +87,32 @@ class RPCCodecV1 implements CodecDecodeInterface, CodecEncodeInterface
 
         return new RPCCodecMessageV1(
             (int)$unpacked['id'],
-            (int)$unpacked['protocol'],
-            $unpacked['header_length'] ? $easyBuf->drainAt((int)$unpacked['header_length']) : null,
-            $easyBuf->drainAt((int)$unpacked['length'])
+            $unpacked['header_length'] ? $easyBuf->drainAt((int)$unpacked['header_length']) : '',
+            $easyBuf->drainAt((int)$unpacked['length']),
+            (int)$unpacked['type']
         );
     }
 
     public function supportsEncode($msg): bool
     {
-        // TODO: Implement supportsEncode() method.
+        return $msg instanceof RPCCodecMessageV1;
     }
 
     /** @param RPCCodecMessageV1 $msg */
-    public function encode($msg)
+    public function encode($msg): string
     {
-        // TODO: Implement encode() method.
+        return pack(
+                'nnnNNN',
+                static::PROTOCOL_IDENTIFIER,
+                static::PROTOCOL_VERSION,
+                $msg->getType(),
+                $msg->getId(),
+                strlen($msg->getHeader()),
+                strlen($msg->getBody())
+            ).
+            $msg->getHeader().
+            $msg->getBody()
+        ;
     }
 
 }

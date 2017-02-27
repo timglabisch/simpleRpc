@@ -8,5 +8,5 @@ interface CodecEncodeInterface
 
     public function supportsEncode($msg): bool;
 
-    public function encode($msg);
+    public function encode($msg): string;
 }
