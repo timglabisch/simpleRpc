@@ -2,20 +2,28 @@ syntax = "proto3";
 
 package Tg.SimpleRPC.SimpleRPCMessage.Generated;
 
-message RpcClientHeaderRequest {
+message RPCRequestHeader {
     uint64 datetime = 1;
     string method = 2;
     bool repeatable = 3;
 }
 
-message RpcClientHeaderResponse {
+message RPCResponseHeader {
+    uint32 duration = 1;
 }
 
-message Person {
-    string firstname = 1;
-    string lastname = 2;
-
-    message Foo {
-        string bar = 1;
-    }
+message RPCWorkerRequest {
+    RPCWorkerConfiguration configuration = 1;
 }
+
+message RPCWorkerResponse {
+    RPCWorkerConfiguration configuration = 1;
+}
+
+message RPCWorkerConfiguration {
+    uint64 name = 1;
+    uint32 max_tasks = 2;
+    repeated string services = 3;
+    string connectionString = 4;
+}
+

@@ -2,18 +2,13 @@
 
 use Tg\SimpleRPC\ReceivedRpcMessage;
 use Tg\SimpleRPC\SimpleRPCWorker\MethodRpcWorkHandler;
-use Tg\SimpleRPC\SimpleRPCWorker\RpcWorkHandlerInterface;
 use Tg\SimpleRPC\SimpleRPCWorker\SimpleRpcWorker;
 use Tg\SimpleRPC\SimpleRPCWorker\WorkerReply;
-use Tg\SimpleRPC\SimpleRPCWorker\WorkerReplyInterface;
 
 require __DIR__ . '/vendor/autoload.php';
 
 
-$loop = React\EventLoop\Factory::create();
-
-
-(new SimpleRpcWorker($loop, $_SERVER['RPC_SERVER']))->run((new MethodRpcWorkHandler)
+$worker = (new MethodRpcWorkHandler('card'))
 
     ->on('methodA', function(ReceivedRpcMessage $message) {
         echo "do some methodA\n";
@@ -29,6 +24,10 @@ $loop = React\EventLoop\Factory::create();
         echo "do some methodC\n";
         return new WorkerReply($message->getBuffer().' reply');
     })
-);
+;
 
-$loop->run();
+
+(new SimpleRpcWorker($_SERVER['RPC_SERVER']))
+    ->register($worker)
+    ->run()
+;

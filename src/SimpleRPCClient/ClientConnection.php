@@ -56,10 +56,10 @@ class ClientConnection
 
                         if (!is_array($msgs)) {
                             die("got bad message\n");
-                          //  $this->client->close();
+                            return;
                         }
 
-                        foreach ($msgs as $msg) {
+                        foreach ((array)$msgs as $msg) {
 
                             if (!isset($this->messageQueue[$msg->getId()])) {
                                 die("wrong message id");

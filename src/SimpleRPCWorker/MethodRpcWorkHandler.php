@@ -10,13 +10,24 @@ class MethodRpcWorkHandler implements RpcWorkHandlerInterface
     /** @var string[] */
     private $methodMap = [];
 
+    /** @var string */
+    private $serviceName;
+
+    public function __construct($serviceName = '')
+    {
+        $this->serviceName = $serviceName ? $serviceName.'.' : '';
+    }
+
+
     public function onWork(ReceivedRpcMessage $message): WorkerReplyInterface
     {
-        if (!isset($this->methodMap[$message->getHeader()->getMethod()])) {
-            throw new \RuntimeException(sprintf("Method %s not found", $message->getHeader()->getMethod()));
+        $method = strtolower($message->getHeader()->getMethod());
+
+        if (!isset($this->methodMap[$method])) {
+            throw new \RuntimeException(sprintf("Method %s not found", $method));
         }
 
-        $cb = $this->methodMap[$message->getHeader()->getMethod()];
+        $cb = $this->methodMap[$method];
         return $cb($message);
     }
 
@@ -27,8 +38,15 @@ class MethodRpcWorkHandler implements RpcWorkHandlerInterface
      */
     public function on(string $method, callable $callable)
     {
-        $this->methodMap[$method] = $callable;
+        $this->methodMap[$this->serviceName.$method] = $callable;
         return $this;
+    }
+
+    public function supports(ReceivedRpcMessage $message): bool
+    {
+        $method = strtolower($message->getHeader()->getMethod());
+
+        return isset($this->methodMap[$method]);
     }
 
     /** @return string[] */

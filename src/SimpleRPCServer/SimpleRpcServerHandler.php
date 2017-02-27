@@ -45,7 +45,7 @@ class SimpleRpcServerHandler
                 }
 
                 if (is_array($messages)) {
-                    foreach ($messages as $message) {
+                    foreach ((array)$messages as $message) {
                         $this->serverHandler->onMessage($client, $message);
                     }
                 } else {

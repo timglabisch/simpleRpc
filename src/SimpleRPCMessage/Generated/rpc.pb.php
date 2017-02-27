@@ -9,7 +9,7 @@ use Google\Protobuf\Internal\GPBType;
 use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
-class RpcClientHeaderRequest extends \Google\Protobuf\Internal\Message
+class RPCRequestHeader extends \Google\Protobuf\Internal\Message
 {
     private $datetime = 0;
     private $method = '';
@@ -50,53 +50,106 @@ class RpcClientHeaderRequest extends \Google\Protobuf\Internal\Message
 
 }
 
-class RpcClientHeaderResponse extends \Google\Protobuf\Internal\Message
+class RPCResponseHeader extends \Google\Protobuf\Internal\Message
 {
+    private $duration = 0;
 
-}
-
-class Person extends \Google\Protobuf\Internal\Message
-{
-    private $firstname = '';
-    private $lastname = '';
-
-    public function getFirstname()
+    public function getDuration()
     {
-        return $this->firstname;
+        return $this->duration;
     }
 
-    public function setFirstname($var)
+    public function setDuration($var)
     {
-        GPBUtil::checkString($var, True);
-        $this->firstname = $var;
-    }
-
-    public function getLastname()
-    {
-        return $this->lastname;
-    }
-
-    public function setLastname($var)
-    {
-        GPBUtil::checkString($var, True);
-        $this->lastname = $var;
+        GPBUtil::checkUint32($var);
+        $this->duration = $var;
     }
 
 }
 
-class Person_Foo extends \Google\Protobuf\Internal\Message
+class RPCWorkerRequest extends \Google\Protobuf\Internal\Message
 {
-    private $bar = '';
+    private $configuration = null;
 
-    public function getBar()
+    public function getConfiguration()
     {
-        return $this->bar;
+        return $this->configuration;
     }
 
-    public function setBar($var)
+    public function setConfiguration(&$var)
+    {
+        GPBUtil::checkMessage($var, \Tg\SimpleRPC\SimpleRPCMessage\Generated\RPCWorkerConfiguration::class);
+        $this->configuration = $var;
+    }
+
+}
+
+class RPCWorkerResponse extends \Google\Protobuf\Internal\Message
+{
+    private $configuration = null;
+
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
+
+    public function setConfiguration(&$var)
+    {
+        GPBUtil::checkMessage($var, \Tg\SimpleRPC\SimpleRPCMessage\Generated\RPCWorkerConfiguration::class);
+        $this->configuration = $var;
+    }
+
+}
+
+class RPCWorkerConfiguration extends \Google\Protobuf\Internal\Message
+{
+    private $name = 0;
+    private $max_tasks = 0;
+    private $services;
+    private $connectionString = '';
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($var)
+    {
+        GPBUtil::checkUint64($var);
+        $this->name = $var;
+    }
+
+    public function getMaxTasks()
+    {
+        return $this->max_tasks;
+    }
+
+    public function setMaxTasks($var)
+    {
+        GPBUtil::checkUint32($var);
+        $this->max_tasks = $var;
+    }
+
+    public function getServices()
+    {
+        return $this->services;
+    }
+
+    public function setServices(&$var)
+    {
+        GPBUtil::checkRepeatedField($var, GPBType::STRING);
+        $this->services = $var;
+    }
+
+    public function getConnectionString()
+    {
+        return $this->connectionString;
+    }
+
+    public function setConnectionString($var)
     {
         GPBUtil::checkString($var, True);
-        $this->bar = $var;
+        $this->connectionString = $var;
     }
 
 }
@@ -104,13 +157,22 @@ class Person_Foo extends \Google\Protobuf\Internal\Message
 $pool = DescriptorPool::getGeneratedPool();
 
 $pool->internalAddGeneratedFile(hex2bin(
-    "0aea010a097270632e70726f746f122754672e53696d706c655250432e53" .
-    "696d706c655250434d6573736167652e47656e657261746564224e0a1652" .
-    "7063436c69656e744865616465725265717565737412100a086461746574" .
-    "696d65180120012804120e0a066d6574686f6418022001280912120a0a72" .
-    "657065617461626c6518032001280822190a17527063436c69656e744865" .
-    "61646572526573706f6e736522410a06506572736f6e12110a0966697273" .
-    "746e616d6518012001280912100a086c6173746e616d651802200128091a" .
-    "120a03466f6f120b0a03626172180120012809620670726f746f33"
+    "0aed030a097270632e70726f746f122754672e53696d706c655250432e53" .
+    "696d706c655250434d6573736167652e47656e65726174656422480a1052" .
+    "50435265717565737448656164657212100a086461746574696d65180120" .
+    "012804120e0a066d6574686f6418022001280912120a0a72657065617461" .
+    "626c6518032001280822250a11525043526573706f6e7365486561646572" .
+    "12100a086475726174696f6e18012001280d226a0a10525043576f726b65" .
+    "725265717565737412560a0d636f6e66696775726174696f6e1801200128" .
+    "0b323f2e54672e53696d706c655250432e53696d706c655250434d657373" .
+    "6167652e47656e6572617465642e525043576f726b6572436f6e66696775" .
+    "726174696f6e226b0a11525043576f726b6572526573706f6e736512560a" .
+    "0d636f6e66696775726174696f6e18012001280b323f2e54672e53696d70" .
+    "6c655250432e53696d706c655250434d6573736167652e47656e65726174" .
+    "65642e525043576f726b6572436f6e66696775726174696f6e22650a1652" .
+    "5043576f726b6572436f6e66696775726174696f6e120c0a046e616d6518" .
+    "012001280412110a096d61785f7461736b7318022001280d12100a087365" .
+    "72766963657318032003280912180a10636f6e6e656374696f6e53747269" .
+    "6e67180420012809620670726f746f33"
 ));
 
