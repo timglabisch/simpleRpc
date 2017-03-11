@@ -20,7 +20,7 @@ class MessageRPCRequest
     /** @var bool */
     private $repeatAble;
 
-    public function __construct(int $id, string $method, string $body, \DateTime $relevantUntil = null, bool $repeatAble)
+    public function __construct(int $id, string $method, string $body, \DateTime $relevantUntil = null, bool $repeatAble = false)
     {
         $this->id = $id;
         $this->method = $method;

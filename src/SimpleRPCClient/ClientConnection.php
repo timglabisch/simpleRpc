@@ -11,6 +11,8 @@ use React\SocketClient\TcpConnector;
 use React\Stream\Stream;
 use Tg\SimpleRPC\ReceivedRpcMessage;
 use Tg\SimpleRPC\RpcMessage;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCRequest;
+use Tg\SimpleRPC\SimpleRPCMessage\MessageHandler\MessageHandler;
 use Tg\SimpleRPC\SimpleRPCServer\RpcClient;
 
 class ClientConnection
@@ -29,6 +31,17 @@ class ClientConnection
 
     private $maxPendingRpcCalls;
 
+    /** @var MessageHandler */
+    private $messageHandler;
+
+    public function __construct(LoopInterface $loop, string $connectionsString, MessageHandler $messageHandler, int $maxPendingRpcCalls = 5000)
+    {
+        $this->loop = $loop;
+        $this->connectionsString = $connectionsString;
+        $this->maxPendingRpcCalls = $maxPendingRpcCalls;
+        $this->messageHandler = $messageHandler;
+    }
+
     /** @return PromiseInterface */
     private function getClientPromise()
     {
@@ -37,7 +50,7 @@ class ClientConnection
             $connection = (new TcpConnector($this->loop))->connect($this->connectionsString);
             $connection->then(function (Stream $stream) {
 
-                $client = new RpcClient(mt_rand(), $stream);
+                $client = new RpcClient(mt_rand(), $stream, $this->messageHandler, $this->messageHandler->getDefaultCodec());
                 $this->clientPromisor->resolve($client);
                 
                 $stream->on(
@@ -84,14 +97,7 @@ class ClientConnection
         return $this->clientPromisor->promise();
     }
 
-    public function __construct(LoopInterface $loop, string $connectionsString, int $maxPendingRpcCalls = 5000)
-    {
-        $this->loop = $loop;
-        $this->connectionsString = $connectionsString;
-        $this->maxPendingRpcCalls = $maxPendingRpcCalls;
-    }
-
-    public function send(RpcMessage $message): PromiseInterface
+    public function send(MessageRPCRequest $message): PromiseInterface
     {
         if (count($this->messageQueue) > $this->maxPendingRpcCalls) {
             throw new \LogicException("
@@ -105,6 +111,8 @@ class ClientConnection
             $this->messageQueue[$message->getId()] = new \React\Promise\Deferred();
             $this->getClientPromise()->then(function(RpcClient $client) use ($message) {
                 $client->send($message);
+            }, function() {
+                echo "nöööp\n"; // todo
             });
         }
 

@@ -14,6 +14,7 @@ class ReceivedRpcMessageTest extends PHPUnit_Framework_TestCase
 
     public function testEncodeDecodeSimpleMessage()
     {
+        $this->markTestSkipped();
         $client = new RpcClient(123, $this->prophesize(ConnectionInterface::class)->reveal());
 
         $header = new RpcClientHeaderRequest();
@@ -32,6 +33,7 @@ class ReceivedRpcMessageTest extends PHPUnit_Framework_TestCase
 
     public function testEncodeDecodeMultiMessage()
     {
+        $this->markTestSkipped();
         $client = new RpcClient(123, $this->prophesize(ConnectionInterface::class)->reveal());
 
         $client->pushBytes((new RpcMessage("fooo1", new RpcClientHeaderRequest()))->encode());
@@ -48,6 +50,7 @@ class ReceivedRpcMessageTest extends PHPUnit_Framework_TestCase
 
     public function testEncodeDecodeMessage()
     {
+        $this->markTestSkipped();
         $client = new RpcClient(123, $this->prophesize(ConnectionInterface::class)->reveal());
 
         $message = (new RpcMessage("fooo", new RpcClientHeaderRequest()))->encode();

@@ -3,11 +3,11 @@
 namespace Tg\SimpleRPC\SimpleRPCWorker;
 
 
-use Tg\SimpleRPC\ReceivedRpcMessage;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCRequest;
 
 interface RpcWorkHandlerInterface
 {
-    public function onWork(ReceivedRpcMessage $message): WorkerReplyInterface;
+    public function onWork(MessageRPCRequest $message): WorkerReplyInterface;
 
-    public function supports(ReceivedRpcMessage $message): bool;
+    public function supports(MessageRPCRequest $message): bool;
 }

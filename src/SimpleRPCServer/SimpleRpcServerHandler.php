@@ -6,6 +6,10 @@ use Exception;
 use React\EventLoop\LoopInterface;
 use React\Socket\ConnectionInterface;
 use Tg\SimpleRPC\ReceivedRpcMessage;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\RPCCodecV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageCreatorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageExtractorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\MessageHandler\MessageHandler;
 
 class SimpleRpcServerHandler
 {
@@ -17,10 +21,18 @@ class SimpleRpcServerHandler
     /** @var RpcServerHandlerInterface */
     private $serverHandler;
 
+    /** @var MessageHandler */
+    private $messageHandler;
+
     public function __construct(
         RpcServerHandlerInterface $serverHandler
     ) {
         $this->serverHandler = $serverHandler;
+        $this->messageHandler = new MessageHandler(
+            [new RPCCodecV1()],
+            [new MessageExtractorV1()],
+            [new MessageCreatorV1()]
+        );
     }
     
     public function run($port, LoopInterface $loop) {
@@ -28,7 +40,7 @@ class SimpleRpcServerHandler
         $socket = new \React\Socket\Server($loop);
         $socket->on('connection', function (ConnectionInterface $worker) {
 
-            $client =  new RpcClient(++$this->clientIncrement, $worker);
+            $client =  new RpcClient(++$this->clientIncrement, $worker, $this->messageHandler);
 
             $this->serverHandler->onConnection($client);
 
@@ -36,21 +48,12 @@ class SimpleRpcServerHandler
 
             $worker->on('data', function ($data) use ($client) {
 
-                $client->pushBytes($data);
+                $client->getBuffer()->pushBytes($data);
 
-                $messages = $client->resolveMessages();
-
-                if ($messages == ReceivedRpcMessage::STATE_NEEDS_MORE_BYTES) {
-                    echo "need more bytes, has ".strlen($client->getBuffer())."\n";
+                foreach ($client->resolveMessages() as $message) {
+                    $this->serverHandler->onMessage($client, $message);
                 }
 
-                if (is_array($messages)) {
-                    foreach ((array)$messages as $message) {
-                        $this->serverHandler->onMessage($client, $message);
-                    }
-                } else {
-                    $a = 0;
-                }
             });
 
             $worker->on('close', function() use ($client) {

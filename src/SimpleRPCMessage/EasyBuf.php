@@ -7,7 +7,7 @@ class EasyBuf
 {
     private $buffer;
 
-    public function __construct(string &$buffer)
+    public function __construct(string $buffer = '')
     {
         $this->buffer = $buffer;
     }
@@ -19,7 +19,7 @@ class EasyBuf
 
     public function hasLen(int $expectedLen)
     {
-        return $this->len() <= $expectedLen;
+        return $this->len() >= $expectedLen;
     }
 
     public function look_at_next_bytes(int $bytes)
@@ -30,6 +30,11 @@ class EasyBuf
     public function unpack_next_bytes(int $bytes, string $format)
     {
         return unpack($format, $this->look_at_next_bytes($bytes));
+    }
+
+    public function pushBytes(string $data)
+    {
+        $this->buffer = $this->buffer . $data;
     }
 
     public function drainAt(int $bytes): string {

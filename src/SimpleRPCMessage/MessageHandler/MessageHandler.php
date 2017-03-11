@@ -3,7 +3,7 @@
 namespace Tg\SimpleRPC\SimpleRPCMessage\MessageHandler;
 
 
-use Tg\SimpleRPC\SimpleRPCMessage\Codec\CodecDecodeInterface;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\CodecInterface;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\CodecEncodeInterface;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\Exception\CodecException;
 use Tg\SimpleRPC\SimpleRPCMessage\EasyBuf;
@@ -12,11 +12,8 @@ use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageExtractorInterface;
 
 class MessageHandler
 {
-    /** @var CodecDecodeInterface[] */
-    private $codecsDecode;
-
-    /** @var CodecEncodeInterface[] */
-    private $codecsEncode;
+    /** @var CodecInterface[] */
+    private $codecs;
 
     /** @var MessageExtractorInterface[] */
     private $messageExtractors;
@@ -24,31 +21,30 @@ class MessageHandler
     /** @var MessageCreatorInterface[] */
     private $messageCreators;
 
-    public function __construct(array $codecsDecode, array $codecsEncode, array $messageExtractors, array $messageCreators)
+    public function __construct(array $codecs, array $messageExtractors, array $messageCreators)
     {
-        $this->codecsDecode = $codecsDecode;
-        $this->codecsEncode = $codecsEncode;
+        $this->codecs = $codecs;
         $this->messageExtractors = $messageExtractors;
         $this->messageCreators = $messageCreators;
     }
 
     /**
      * @param EasyBuf $buffer
-     * @return int|CodecDecodeInterface
+     * @return int|CodecInterface
      */
-    private function getCodecDecode(EasyBuf $buffer)
+    public function getCodecByBuffer(EasyBuf $buffer)
     {
         // first try to find a codec that supports the current buffer
-        foreach ($this->codecsDecode as $codecDecode) {
-            if ($codecDecode->supportsDecode($buffer) === CodecDecodeInterface::SUPPORTS_YES) {
+        foreach ($this->codecs as $codecDecode) {
+            if ($codecDecode->supportsDecode($buffer) === CodecInterface::SUPPORTS_YES) {
                 return $codecDecode;
             }
         }
 
         // try to find a codec that may need some more bytes
-        foreach ($this->codecsDecode as $codecDecode) {
-            if ($codecDecode->supportsDecode($buffer) === CodecDecodeInterface::SUPPORTS_NEEDS_MORE_BYTES) {
-                return CodecDecodeInterface::SUPPORTS_NEEDS_MORE_BYTES;
+        foreach ($this->codecs as $codecDecode) {
+            if ($codecDecode->supportsDecode($buffer) === CodecInterface::SUPPORTS_NEEDS_MORE_BYTES) {
+                return CodecInterface::SUPPORTS_NEEDS_MORE_BYTES;
             }
         }
 
@@ -66,20 +62,29 @@ class MessageHandler
         throw new CodecException("Could not find matching message extractor");
     }
 
-    public function decode(string $bytes)
+    public function decode(EasyBuf $buffer, CodecInterface $codec)
     {
-        $buffer = new EasyBuf($bytes);
-
         $msgs = [];
 
         do {
 
-            if (($codec = $this->getCodecDecode($buffer)) === CodecDecodeInterface::SUPPORTS_NEEDS_MORE_BYTES) {
+            $codecSupports = $codec->supportsDecode($buffer);
+
+            if ($codecSupports === CodecInterface::SUPPORTS_NEEDS_MORE_BYTES) {
                 return $msgs;
             }
 
-            $decded = $codec->decode($buffer);
-            $msgs[] = $this->getMessageExtractor($decded)->extract($decded);
+            if ($codecSupports === CodecInterface::SUPPORTS_NO) {
+                throw new CodecException("Codec is wrong, isnt supported");
+            }
+
+            $decoded = $codec->decode($buffer);
+
+            if ($decoded === CodecInterface::DECODE_NEEDS_MORE_BYTES) {
+                return $msgs;
+            }
+
+            $msgs[] = $this->getMessageExtractor($decoded)->extract($decoded);
 
 
         } while($buffer->len());
@@ -88,33 +93,27 @@ class MessageHandler
     }
 
 
-    private function getCodecEncode($msg)
-    {
-        // first try to find a codec that supports the current buffer
-        foreach ($this->codecsEncode as $codecsEncode) {
-            if ($codecsEncode->supportsEncode($msg)) {
-                return $codecsEncode;
-            }
-        }
-
-        throw new CodecException("Could not find matching encode codec");
-    }
-
-    private function getMessageCreators($msg)
+    private function getMessageCreator($msg, CodecInterface $codec)
     {
         foreach ($this->messageCreators as $messageCreator) {
-            if ($messageCreator->supports($msg)) {
+            if ($messageCreator->supports($msg, $codec)) {
                 return $messageCreator;
             }
         }
 
-        throw new CodecException("Could not find matching message extractor");
+        throw new CodecException("Could not find matching message creator");
     }
 
-    public function encode($msg)
+    public function encode($msg, CodecInterface $codec)
     {
-        $raw = $this->getMessageCreators($msg);
-        return $this->getCodecEncode($raw)->encode($raw);
+        return $codec->encode(
+            $this->getMessageCreator($msg, $codec)->create($msg)
+        );
+    }
+
+    public function getDefaultCodec()
+    {
+        return $this->codecs[0] ?? null;
     }
 
 }

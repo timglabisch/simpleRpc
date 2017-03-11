@@ -4,7 +4,6 @@ namespace Tg\SimpleRPC\SimpleRPCServer\ServerHandler;
 
 
 use Tg\SimpleRPC\ReceivedRpcMessage;
-use Tg\SimpleRPC\RpcMessage;
 use Tg\SimpleRPC\SimpleRPCServer\RpcClient;
 use Tg\SimpleRPC\SimpleRPCServer\RpcServerHandlerInterface;
 use Tg\SimpleRPC\SimpleRPCServer\WorkQueue;
@@ -35,12 +34,12 @@ class WorkerServerHandler extends AbstractServerHandler
         });
     }
 
-    function onError(RpcClient $client, \Exception $exception)
+    public function onError(RpcClient $client, \Exception $exception)
     {
         $this->onClose($client);
     }
 
-    function onClose(RpcClient $client)
+    public function onClose(RpcClient $client)
     {
         if (isset($this->idlClients[$client->getId()])) {
             unset($this->idlClients[$client->getId()]);
@@ -60,23 +59,23 @@ class WorkerServerHandler extends AbstractServerHandler
         unset($this->clientWork[$client->getId()]);
     }
 
-    function tryToEnqueWork(RpcClient $client)
+    public function tryToEnqueWork(RpcClient $client)
     {
         if ($this->workQueue->isEmpty()) {
             $this->idlClients[$client->getId()] = $client;
             return;
         }
 
-        /** @var $message ReceivedRpcMessage */
-        $message = $this->workQueue->dequeue();
+        /** @var $senderAndMessage ReceivedRpcMessage */
+        $senderAndMessage = $this->workQueue->dequeue();
         unset($this->idlClients[$client->getId()]);
 
-        $this->clientWork[$client->getId()] = $message;
+        $this->clientWork[$client->getId()] = $senderAndMessage;
 
-        $client->send($message);
+        $client->send($senderAndMessage->getMsg());
     }
 
-    function onConnection(RpcClient $client)
+    public function onConnection(RpcClient $client)
     {
         $this->tryToEnqueWork($client);
     }

@@ -3,6 +3,11 @@
 namespace Tg\SimpleRPC\SimpleRPCMessage\Message\V1;
 
 
+use Google\Protobuf\Internal\GPBType;
+use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\InputStream;
+use Google\Protobuf\Internal\RepeatedField;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\CodecInterface;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\Exception\CodecException;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\RPCCodecMessageV1;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\RPCCodecV1;
@@ -40,6 +45,11 @@ class MessageCreatorV1 implements MessageCreatorInterface
         }
 
         throw new CodecException('Message is not supported');
+    }
+
+    public function supports($message, CodecInterface $codec)
+    {
+        return $codec instanceof RPCCodecV1;
     }
 
     private function createRPCRequest(MessageRPCRequest $message): RPCCodecMessageV1
@@ -96,7 +106,9 @@ class MessageCreatorV1 implements MessageCreatorInterface
     private function createWorkerConfiguration(MessageRPCWorkerConfiguration $configuration)
     {
         $c = new RPCWorkerConfiguration();
-        $c->setServices($configuration->getServices());
+        foreach ($configuration->getServices() as $service) {
+            $c->getServices()[] = $service;
+        }
         $c->setName($configuration->getName());
         $c->setMaxTasks($configuration->getMaxTasks());
         $c->setConnectionString($configuration->getConnectionString());
@@ -107,7 +119,8 @@ class MessageCreatorV1 implements MessageCreatorInterface
     {
 
         $content = new RPCWorkerRequest();
-        $content->setConfiguration($this->createWorkerConfiguration($message->getConfiguration()));
+        $configuration = $this->createWorkerConfiguration($message->getConfiguration());
+        $content->setConfiguration($configuration);
 
         return new RPCCodecMessageV1(
             $message->getId(),

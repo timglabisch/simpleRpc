@@ -3,12 +3,11 @@
 namespace Tg\SimpleRPC\SimpleRPCMessage\Codec\V1;
 
 
-use Tg\SimpleRPC\SimpleRPCMessage\Codec\CodecDecodeInterface;
-use Tg\SimpleRPC\SimpleRPCMessage\Codec\CodecEncodeInterface;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\CodecInterface;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\Exception\MalformedDataException;
 use Tg\SimpleRPC\SimpleRPCMessage\EasyBuf;
 
-class RPCCodecV1 implements CodecDecodeInterface, CodecEncodeInterface
+class RPCCodecV1 implements CodecInterface
 {
     const PROTOCOL_IDENTIFIER = 1337;
 
@@ -49,14 +48,14 @@ class RPCCodecV1 implements CodecDecodeInterface, CodecEncodeInterface
     public function supportsDecode(EasyBuf $easyBuf)
     {
         if (!$easyBuf->hasLen(static::getHeaderSize())) {
-            return CodecDecodeInterface::SUPPORTS_NEEDS_MORE_BYTES;
+            return CodecInterface::SUPPORTS_NEEDS_MORE_BYTES;
         }
 
         if (array_values($easyBuf->unpack_next_bytes(4, 'na/nb')) === [static::PROTOCOL_IDENTIFIER, static::PROTOCOL_VERSION]) {
-            return CodecDecodeInterface::SUPPORTS_YES;
+            return CodecInterface::SUPPORTS_YES;
         }
 
-        return CodecDecodeInterface::SUPPORTS_NO;
+        return CodecInterface::SUPPORTS_NO;
     }
 
     public function decode(EasyBuf $easyBuf)
@@ -80,7 +79,7 @@ class RPCCodecV1 implements CodecDecodeInterface, CodecEncodeInterface
         $expectedSize = static::getHeaderSize() + (int)$unpacked['header_length'] + (int)$unpacked['length'];
 
         if (!$easyBuf->hasLen($expectedSize)) {
-            return CodecDecodeInterface::DECODE_NEEDS_MORE_BYTES;
+            return CodecInterface::DECODE_NEEDS_MORE_BYTES;
         }
 
         $easyBuf->drainAt(static::getHeaderSize()); // consume the protocol header

@@ -8,6 +8,9 @@ use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\RPCCodecMessageV1;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\RPCCodecV1;
 use Tg\SimpleRPC\SimpleRPCMessage\Generated\RPCRequestHeader;
 use Tg\SimpleRPC\SimpleRPCMessage\Generated\RPCResponseHeader;
+use Tg\SimpleRPC\SimpleRPCMessage\Generated\RPCWorkerConfiguration;
+use Tg\SimpleRPC\SimpleRPCMessage\Generated\RPCWorkerRequest;
+use Tg\SimpleRPC\SimpleRPCMessage\Generated\RPCWorkerResponse;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageExtractorInterface;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCPing;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCPong;
@@ -50,21 +53,20 @@ class MessageExtractorV1 implements MessageExtractorInterface
 
     private function extractWorkerConfigurationRequest(RPCCodecMessageV1 $message)
     {
-        /** @var $header MessageRPCWorkerConfigurationRequest */
-        $header = (new RPCRequestHeader())->parseFromStream(new InputStream($message->getHeader()));
+        $req = new RPCWorkerRequest();
 
-        if (!$header) {
-            throw new MalformedDataException('Could not parse Header');
+        if (!$req->parseFromStream(new InputStream($message->getBody()))) {
+            throw new MalformedDataException('Could not parse Body');
         }
 
-        $configuration = $header->getConfiguration();
+        $configuration = $req->getConfiguration();
 
         return new MessageRPCWorkerConfigurationRequest(
             $message->getId(),
             new MessageRPCWorkerConfiguration(
                 $configuration->getName(),
                 $configuration->getMaxTasks(),
-                $configuration->getServices(),
+                iterator_to_array($configuration->getServices()),
                 $configuration->getConnectionString()
             )
         );
@@ -72,14 +74,13 @@ class MessageExtractorV1 implements MessageExtractorInterface
 
     private function extractWorkerConfigurationResponse(RPCCodecMessageV1 $message)
     {
-        /** @var $header MessageRPCWorkerConfigurationResponse */
-        $header = (new RPCResponseHeader())->parseFromStream(new InputStream($message->getHeader()));
+        $res = new RPCWorkerResponse();
 
-        if (!$header) {
-            throw new MalformedDataException('Could not parse Header');
+        if (!$res->parseFromStream(new InputStream($message->getBody()))) {
+            throw new MalformedDataException('Could not parse Body');
         }
 
-        $configuration = $header->getConfiguration();
+        $configuration = $res->getConfiguration();
 
         return new MessageRPCWorkerConfigurationResponse(
             $message->getId(),
@@ -95,9 +96,9 @@ class MessageExtractorV1 implements MessageExtractorInterface
     private function extractRPCResponse(RPCCodecMessageV1 $message)
     {
         /** @var $header RPCResponseHeader */
-        $header = (new RPCResponseHeader())->parseFromStream(new InputStream($message->getHeader()));
+        $header = new RPCResponseHeader();
 
-        if (!$header) {
+        if (!$header->parseFromStream(new InputStream($message->getHeader()))) {
             throw new MalformedDataException('Could not parse Header');
         }
 
@@ -110,10 +111,9 @@ class MessageExtractorV1 implements MessageExtractorInterface
 
     private function extractRPCRequest(RPCCodecMessageV1 $message)
     {
-        /** @var $header RPCRequestHeader */
-        $header = (new RPCRequestHeader())->parseFromStream(new InputStream($message->getHeader()));
+        $header = new RPCRequestHeader();
 
-        if (!$header) {
+        if (!$header->parseFromStream(new InputStream($message->getHeader()))) {
             throw new MalformedDataException('Could not parse Header');
         }
 

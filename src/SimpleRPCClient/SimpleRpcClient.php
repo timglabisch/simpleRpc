@@ -3,9 +3,13 @@
 namespace Tg\SimpleRPC\SimpleRPCClient;
 
 use React\EventLoop\LoopInterface;
-use SensioLabs\Consul\Services\Catalog;
-use Tg\SimpleRPC\RpcMessage;
 use Tg\SimpleRPC\SimpleRPCClient\ServiceDiscovery\ServiceDiscoveryInterface;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\RPCCodecV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCRequest;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageCreatorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageExtractorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\MessageHandler\MessageHandler;
+use Tg\SimpleRPC\SimpleRPCMessage\MessageIdGenerator;
 
 class SimpleRpcClient
 {
@@ -19,6 +23,11 @@ class SimpleRpcClient
     /** @var ClientConnection[] */
     private $connections = [];
 
+    private $messageHandler;
+
+    /** @var MessageIdGenerator */
+    private $idGenerator;
+
     /** @param ClientConnection[] $connections */
     public function __construct(
         LoopInterface $loop,
@@ -27,16 +36,23 @@ class SimpleRpcClient
     {
         $this->loop = $loop;
         $this->serviceDiscovery = $serviceDiscovery;
+        $this->messageHandler = new MessageHandler(
+            [new RPCCodecV1()],
+            [new MessageExtractorV1()],
+            [new MessageCreatorV1()]
+        );
+        $this->idGenerator = new MessageIdGenerator();
     }
 
-    private function getClientConnection(): ClientConnection
+    private function getClientConnection(MessageHandler $messageHandler): ClientConnection
     {
         $connectionString = $this->serviceDiscovery->getConnectionString();
 
         if (!isset($this->connections[$connectionString])) {
             $this->connections[$connectionString] = new ClientConnection(
                 $this->loop,
-                $connectionString
+                $connectionString,
+                $messageHandler
             );
         }
 
@@ -44,9 +60,13 @@ class SimpleRpcClient
     }
 
     /** @return \React\Promise\PromiseInterface */
-    public function send(RpcMessage $message)
+    public function send(string $method, $body)
     {
-        return $this->getClientConnection()->send($message);
+        return $this->getClientConnection($this->messageHandler)->send(new MessageRPCRequest(
+            $this->idGenerator->getNewMessageId(),
+            $method,
+            $body
+        ));
     }
 
 }

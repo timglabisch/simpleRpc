@@ -4,7 +4,7 @@ namespace Tg\SimpleRPC\SimpleRPCMessage\Codec;
 
 use Tg\SimpleRPC\SimpleRPCMessage\EasyBuf;
 
-interface CodecDecodeInterface
+interface CodecInterface
 {
     const SUPPORTS_YES = 1;
 
@@ -17,4 +17,8 @@ interface CodecDecodeInterface
     public function supportsDecode(EasyBuf $easyBuf);
 
     public function decode(EasyBuf $easyBuf);
+
+    public function supportsEncode($msg): bool;
+
+    public function encode($msg): string;
 }

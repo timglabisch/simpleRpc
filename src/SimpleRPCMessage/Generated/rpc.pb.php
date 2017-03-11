@@ -103,7 +103,7 @@ class RPCWorkerResponse extends \Google\Protobuf\Internal\Message
 
 class RPCWorkerConfiguration extends \Google\Protobuf\Internal\Message
 {
-    private $name = 0;
+    private $name = '';
     private $max_tasks = 0;
     private $services;
     private $connectionString = '';
@@ -115,7 +115,7 @@ class RPCWorkerConfiguration extends \Google\Protobuf\Internal\Message
 
     public function setName($var)
     {
-        GPBUtil::checkUint64($var);
+        GPBUtil::checkString($var, True);
         $this->name = $var;
     }
 
@@ -171,7 +171,7 @@ $pool->internalAddGeneratedFile(hex2bin(
     "6c655250432e53696d706c655250434d6573736167652e47656e65726174" .
     "65642e525043576f726b6572436f6e66696775726174696f6e22650a1652" .
     "5043576f726b6572436f6e66696775726174696f6e120c0a046e616d6518" .
-    "012001280412110a096d61785f7461736b7318022001280d12100a087365" .
+    "012001280912110a096d61785f7461736b7318022001280d12100a087365" .
     "72766963657318032003280912180a10636f6e6e656374696f6e53747269" .
     "6e67180420012809620670726f746f33"
 ));

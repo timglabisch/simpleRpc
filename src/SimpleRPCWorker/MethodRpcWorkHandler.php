@@ -3,7 +3,7 @@
 namespace Tg\SimpleRPC\SimpleRPCWorker;
 
 
-use Tg\SimpleRPC\ReceivedRpcMessage;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCRequest;
 
 class MethodRpcWorkHandler implements RpcWorkHandlerInterface
 {
@@ -18,10 +18,9 @@ class MethodRpcWorkHandler implements RpcWorkHandlerInterface
         $this->serviceName = $serviceName ? $serviceName.'.' : '';
     }
 
-
-    public function onWork(ReceivedRpcMessage $message): WorkerReplyInterface
+    public function onWork(MessageRPCRequest $message): WorkerReplyInterface
     {
-        $method = strtolower($message->getHeader()->getMethod());
+        $method = strtolower($message->getMethod());
 
         if (!isset($this->methodMap[$method])) {
             throw new \RuntimeException(sprintf("Method %s not found", $method));
@@ -42,9 +41,9 @@ class MethodRpcWorkHandler implements RpcWorkHandlerInterface
         return $this;
     }
 
-    public function supports(ReceivedRpcMessage $message): bool
+    public function supports(MessageRPCRequest $message): bool
     {
-        $method = strtolower($message->getHeader()->getMethod());
+        $method = strtolower($message->getMethod());
 
         return isset($this->methodMap[$method]);
     }

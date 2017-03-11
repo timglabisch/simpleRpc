@@ -6,9 +6,15 @@ use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
 use React\SocketClient\TcpConnector;
 use React\Stream\Stream;
-use Tg\SimpleRPC\ReceivedRpcMessage;
-use Tg\SimpleRPC\RpcMessage;
-use Tg\SimpleRPC\SimpleRPCMessage\Generated\RpcClientHeaderResponse;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\CodecInterface;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\RPCCodecV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCRequest;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfiguration;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfigurationRequest;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageCreatorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageExtractorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\MessageHandler\MessageHandler;
+use Tg\SimpleRPC\SimpleRPCMessage\MessageIdGenerator;
 
 class SimpleRpcWorker
 {
@@ -24,10 +30,22 @@ class SimpleRpcWorker
     /** @var RpcWorkHandlerInterface[] */
     private $workHandlers = [];
 
+    /** @var MessageHandler */
+    private $messageHandler;
+
+    /** @var MessageIdGenerator */
+    private $idGenerator;
+
     public function __construct($serverIp, LoopInterface $loop = null)
     {
         $this->serverIp = $serverIp;
         $this->loop = $loop ? $loop : \React\EventLoop\Factory::create();
+        $this->messageHandler = new MessageHandler(
+            [new RPCCodecV1()],
+            [new MessageExtractorV1()],
+            [new MessageCreatorV1()]
+        );
+        $this->idGenerator = new MessageIdGenerator();
     }
 
     /** @return PromiseInterface */
@@ -54,40 +72,39 @@ class SimpleRpcWorker
     {
         $this->getServerConnection()->then(function (Stream $stream) {
 
-            $client = new \Tg\SimpleRPC\SimpleRPCServer\RpcClient(0, $stream);
+            $client = new \Tg\SimpleRPC\SimpleRPCServer\RpcClient(0, $stream, $this->messageHandler, $this->messageHandler->getDefaultCodec());
 
-            $client->send(new RpcMessage())
+            $client->send(
+                new MessageRPCWorkerConfigurationRequest(
+                    $this->idGenerator->getNewMessageId(),
+                    new MessageRPCWorkerConfiguration("foo", 100, ["lala"], '')
+                )
+            );
 
-            // todo, interne nachricht um services zu registrieren.
 
             $stream->on('error', function() {
                 die('Error');
             });
 
             $stream->on('data', function ($data) use ($stream, $client) {
-                $client->pushBytes($data);
+                $client->getBuffer()->pushBytes($data);
 
-                $msgs = ReceivedRpcMessage::fromData($client);
-
-                if ($msgs == ReceivedRpcMessage::STATE_NEEDS_MORE_BYTES) {
-                    return;
-                }
-
-                if (!is_array($msgs)) {
-                    $stream->end();
-                    return;
-                }
-
-                foreach ((array)$msgs as $msg) {
+                foreach ($client->resolveMessages() as $msg) {
                     
                     foreach ($this->workHandlers as $workHandler) {
                         
-                        if (!$workHandler->supports($msg)) {
+                        if (!$workHandler->supports($msg->getMsg())) {
                             continue 2;
                         }
-                        
+
+                        if (!$msg instanceof MessageRPCRequest) {
+                            echo "interne Nachricht vom typ ". get_class($msg)."\n";
+                            continue;
+                        }
+
                         $response = $workHandler->onWork($msg);
-                        $stream->write((new RpcMessage($response->toBytes(), new RpcClientHeaderResponse(), 1337, 1, $msg->getId()))->encode());
+
+                        $client->send($response);
                     }
 
                     throw new \RuntimeException("Could not handel Message.");

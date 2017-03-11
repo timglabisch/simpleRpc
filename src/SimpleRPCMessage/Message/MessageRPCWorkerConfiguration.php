@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: tim
- * Date: 26/02/17
- * Time: 22:52
- */
 
 namespace Tg\SimpleRPC\SimpleRPCMessage\Message;
 
@@ -25,17 +19,10 @@ class MessageRPCWorkerConfiguration
 
     public function __construct(string $name, int $max_tasks, array $services, string $connectionString)
     {
-        $this->id = $id;
         $this->name = $name;
         $this->max_tasks = $max_tasks;
         $this->services = $services;
         $this->connectionString = $connectionString;
-    }
-
-    /** @return int */
-    public function getId(): int
-    {
-        return $this->id;
     }
 
     /** @return string */

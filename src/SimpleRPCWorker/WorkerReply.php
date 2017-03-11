@@ -15,7 +15,7 @@ class WorkerReply implements WorkerReplyInterface
         $this->bytes = $bytes;
     }
 
-    function toBytes()
+    public function toBytes()
     {
         return $this->bytes;
     }
