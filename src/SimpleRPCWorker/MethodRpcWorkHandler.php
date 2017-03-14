@@ -49,7 +49,7 @@ class MethodRpcWorkHandler implements RpcWorkHandlerInterface
     }
 
     /** @return string[] */
-    public function getSupportedMethosNames()
+    public function getSupportedServices(): array
     {
         return array_keys($this->methodMap);
     }

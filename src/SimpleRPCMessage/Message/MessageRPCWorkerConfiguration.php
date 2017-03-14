@@ -6,7 +6,7 @@ namespace Tg\SimpleRPC\SimpleRPCMessage\Message;
 class MessageRPCWorkerConfiguration
 {
     /** @var string */
-    private $name;
+    private $active;
 
     /** @var int */
     private $max_tasks;
@@ -17,18 +17,18 @@ class MessageRPCWorkerConfiguration
     /** @var string */
     private $connectionString;
 
-    public function __construct(string $name, int $max_tasks, array $services, string $connectionString)
+    public function __construct(bool $active, int $max_tasks, array $services, string $connectionString)
     {
-        $this->name = $name;
+        $this->active = $active;
         $this->max_tasks = $max_tasks;
         $this->services = $services;
         $this->connectionString = $connectionString;
     }
 
     /** @return string */
-    public function getName(): string
+    public function getActive(): string
     {
-        return $this->name;
+        return $this->active;
     }
 
     /** @return int */

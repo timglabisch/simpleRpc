@@ -68,6 +68,20 @@ class SimpleRpcWorker
         return $this;
     }
 
+    /** @return string[] */
+    private function getSupportedServices()
+    {
+        $services = [];
+
+        foreach ($this->workHandlers as $handler) {
+            foreach ($handler->getSupportedServices() as $serviceName) {
+                $services[] = $serviceName;
+            }
+        }
+
+        return array_values(array_unique($services));
+    }
+
     public function run()
     {
         $this->getServerConnection()->then(function (Stream $stream) {
@@ -77,7 +91,7 @@ class SimpleRpcWorker
             $client->send(
                 new MessageRPCWorkerConfigurationRequest(
                     $this->idGenerator->getNewMessageId(),
-                    new MessageRPCWorkerConfiguration("foo", 100, ["lala"], '')
+                    new MessageRPCWorkerConfiguration("foo", 100, $this->getSupportedServices(), '')
                 )
             );
 
@@ -92,14 +106,14 @@ class SimpleRpcWorker
                 foreach ($client->resolveMessages() as $msg) {
                     
                     foreach ($this->workHandlers as $workHandler) {
-                        
-                        if (!$workHandler->supports($msg->getMsg())) {
-                            continue 2;
-                        }
 
                         if (!$msg instanceof MessageRPCRequest) {
                             echo "interne Nachricht vom typ ". get_class($msg)."\n";
-                            continue;
+                            continue 2;
+                        }
+
+                        if (!$workHandler->supports($msg->getMsg())) {
+                            continue 2;
                         }
 
                         $response = $workHandler->onWork($msg);

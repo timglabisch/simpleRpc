@@ -19,6 +19,7 @@ use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCResponse;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfiguration;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfigurationRequest;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfigurationResponse;
+use Tg\SimpleRPC\SimpleRPCServer\ServerHandler\Worker\WorkerClientConfiguration;
 
 class MessageExtractorV1 implements MessageExtractorInterface
 {
@@ -59,12 +60,13 @@ class MessageExtractorV1 implements MessageExtractorInterface
             throw new MalformedDataException('Could not parse Body');
         }
 
+        /** @var $configuration WorkerClientConfiguration */
         $configuration = $req->getConfiguration();
 
         return new MessageRPCWorkerConfigurationRequest(
             $message->getId(),
             new MessageRPCWorkerConfiguration(
-                $configuration->getName(),
+                $configuration->getActive(),
                 $configuration->getMaxTasks(),
                 iterator_to_array($configuration->getServices()),
                 $configuration->getConnectionString()
@@ -80,14 +82,15 @@ class MessageExtractorV1 implements MessageExtractorInterface
             throw new MalformedDataException('Could not parse Body');
         }
 
+        /** @var $configuration WorkerClientConfiguration */
         $configuration = $res->getConfiguration();
 
         return new MessageRPCWorkerConfigurationResponse(
             $message->getId(),
             new MessageRPCWorkerConfiguration(
-                $configuration->getName(),
+                $configuration->getActive(),
                 $configuration->getMaxTasks(),
-                $configuration->getServices(),
+                iterator_to_array($configuration->getServices()),
                 $configuration->getConnectionString()
             )
         );

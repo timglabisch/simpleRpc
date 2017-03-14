@@ -14,7 +14,8 @@
         "symfony/dependency-injection": "^3.2",
         "symfony/console": "^3.2",
         "symfony/finder": "^3.2",
-        "sensiolabs/consul-php-sdk": "^2.0"
+        "sensiolabs/consul-php-sdk": "^2.0",
+        "symfony/event-dispatcher": "^3.2"
     },
     "authors": [
         {

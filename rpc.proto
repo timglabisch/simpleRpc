@@ -21,7 +21,7 @@ message RPCWorkerResponse {
 }
 
 message RPCWorkerConfiguration {
-    string name = 1;
+    bool active = 1;
     uint32 max_tasks = 2;
     repeated string services = 3;
     string connectionString = 4;

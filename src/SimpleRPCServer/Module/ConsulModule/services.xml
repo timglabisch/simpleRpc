@@ -7,6 +7,7 @@
 
         <service id="module_consul" class="Tg\SimpleRPC\SimpleRPCServer\Module\ConsulModule\ConsulModule">
             <argument type="service" id="event_loop" />
+            <argument type="service" id="event_dispatcher" />
             <tag name="module" />
         </service>
 

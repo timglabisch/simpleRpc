@@ -103,20 +103,20 @@ class RPCWorkerResponse extends \Google\Protobuf\Internal\Message
 
 class RPCWorkerConfiguration extends \Google\Protobuf\Internal\Message
 {
-    private $name = '';
+    private $active = false;
     private $max_tasks = 0;
     private $services;
     private $connectionString = '';
 
-    public function getName()
+    public function getActive()
     {
-        return $this->name;
+        return $this->active;
     }
 
-    public function setName($var)
+    public function setActive($var)
     {
-        GPBUtil::checkString($var, True);
-        $this->name = $var;
+        GPBUtil::checkBool($var);
+        $this->active = $var;
     }
 
     public function getMaxTasks()
@@ -157,7 +157,7 @@ class RPCWorkerConfiguration extends \Google\Protobuf\Internal\Message
 $pool = DescriptorPool::getGeneratedPool();
 
 $pool->internalAddGeneratedFile(hex2bin(
-    "0aed030a097270632e70726f746f122754672e53696d706c655250432e53" .
+    "0aef030a097270632e70726f746f122754672e53696d706c655250432e53" .
     "696d706c655250434d6573736167652e47656e65726174656422480a1052" .
     "50435265717565737448656164657212100a086461746574696d65180120" .
     "012804120e0a066d6574686f6418022001280912120a0a72657065617461" .
@@ -169,10 +169,10 @@ $pool->internalAddGeneratedFile(hex2bin(
     "726174696f6e226b0a11525043576f726b6572526573706f6e736512560a" .
     "0d636f6e66696775726174696f6e18012001280b323f2e54672e53696d70" .
     "6c655250432e53696d706c655250434d6573736167652e47656e65726174" .
-    "65642e525043576f726b6572436f6e66696775726174696f6e22650a1652" .
-    "5043576f726b6572436f6e66696775726174696f6e120c0a046e616d6518" .
-    "012001280912110a096d61785f7461736b7318022001280d12100a087365" .
-    "72766963657318032003280912180a10636f6e6e656374696f6e53747269" .
-    "6e67180420012809620670726f746f33"
+    "65642e525043576f726b6572436f6e66696775726174696f6e22670a1652" .
+    "5043576f726b6572436f6e66696775726174696f6e120e0a066163746976" .
+    "6518012001280812110a096d61785f7461736b7318022001280d12100a08" .
+    "736572766963657318032003280912180a10636f6e6e656374696f6e5374" .
+    "72696e67180420012809620670726f746f33"
 ));
 

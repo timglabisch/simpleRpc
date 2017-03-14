@@ -7,6 +7,8 @@
 
         <service id="container" synthetic="true" />
 
+        <service id="event_dispatcher" class="Symfony\Component\EventDispatcher\EventDispatcher" />
+
         <service id="command_start_server" class="Tg\SimpleRPC\SimpleRPCServer\Command\StartServerCommand">
             <argument type="service" id="event_loop"/>
             <argument type="service" id="client_server_handler"/>
@@ -30,6 +32,7 @@
 
         <service id="worker_server_handler" class="Tg\SimpleRPC\SimpleRPCServer\ServerHandler\WorkerServerHandler">
             <argument type="service" id="work_queue"/>
+            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <service id="worker_server_handler_logable_decorator" class="Tg\SimpleRPC\SimpleRPCServer\ServerHandler\LogableServerHandler" decorates="worker_server_handler">

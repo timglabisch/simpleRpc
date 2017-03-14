@@ -109,7 +109,7 @@ class MessageCreatorV1 implements MessageCreatorInterface
         foreach ($configuration->getServices() as $service) {
             $c->getServices()[] = $service;
         }
-        $c->setName($configuration->getName());
+        $c->setActive($configuration->getActive());
         $c->setMaxTasks($configuration->getMaxTasks());
         $c->setConnectionString($configuration->getConnectionString());
         return $c;
@@ -133,7 +133,8 @@ class MessageCreatorV1 implements MessageCreatorInterface
     private function createWorkerConfigurationResponse(MessageRPCWorkerConfigurationResponse $message): RPCCodecMessageV1
     {
         $content = new RPCWorkerRequest();
-        $content->setConfiguration($this->createWorkerConfiguration($message->getConfiguration()));
+        $configuration = $this->createWorkerConfiguration($message->getConfiguration());
+        $content->setConfiguration($configuration);
 
         return new RPCCodecMessageV1(
             $message->getId(),
