@@ -1,0 +1,19 @@
+---
+- hosts: all
+  tasks:
+    - debug: var=hostvars
+
+- hosts: node
+  pre_tasks:
+    - apt:
+        update_cache: yes
+      become: true
+  roles:
+    - role: common
+      become: true
+    - role: consul
+      become: true
+    - role: docker
+      become: true
+    - role: php
+      become: true

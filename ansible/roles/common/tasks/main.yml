@@ -1,0 +1,9 @@
+---
+- name: ensure unzip and curl installed
+  apt:
+    name: '{{ item }}'
+  with_items:
+    - 'unzip'
+    - 'curl'
+    - 'git'
+    - 'apt-transport-https'

@@ -1,0 +1,15 @@
+---
+- name: ensure docker repo key exists
+  apt_key:
+    url: https://apt.dockerproject.org/gpg
+    state: present
+
+- name: ensure apt repository exists
+  apt_repository:
+    repo: 'deb https://apt.dockerproject.org/repo/ debian-jessie main'
+    state: present
+
+- name: ensure apt package installed
+  apt:
+    name: docker-engine
+    state: present

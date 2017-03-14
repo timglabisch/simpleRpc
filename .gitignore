@@ -2,3 +2,4 @@
 vendor/*
 foo/*
 */.vagrant/*
+ansible/site.retry
