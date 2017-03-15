@@ -21,10 +21,11 @@ while(true) {
     foreach (range(0, 600) as $x) {
         $rand = random_int(0, PHP_INT_MAX);
 
-        $methods = ['methodA', 'methodB', 'methodC'];
+        $methods = ['card.methodA', 'card.methodB', 'card.methodC'];
 
-        $rpcClient->send($methods[array_rand($methods)], 'some_content')->then(function (MessageRPCResponse $response) use ($rand) {
-            if ($response->getBody() !== 'Hello World '.$rand.' reply') {
+        $method = $methods[array_rand($methods)];
+        $rpcClient->send($method, $method.' '.$rand)->then(function (MessageRPCResponse $response) use ($rand, $method) {
+            if ($response->getBody() !== $method.' '.$rand.' reply') {
                 die('bad id ...');
             }
 

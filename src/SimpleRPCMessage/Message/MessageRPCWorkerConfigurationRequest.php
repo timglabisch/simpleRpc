@@ -4,7 +4,7 @@ namespace Tg\SimpleRPC\SimpleRPCMessage\Message;
 
 
 
-class MessageRPCWorkerConfigurationRequest
+class MessageRPCWorkerConfigurationRequest implements MessageInterface
 {
     /** @var int */
     private $id;

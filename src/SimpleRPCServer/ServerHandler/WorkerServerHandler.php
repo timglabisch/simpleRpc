@@ -146,7 +146,7 @@ class WorkerServerHandler extends AbstractServerHandler
     public function onMessage(RpcClient $client, ReceivedRpcMessage $message)
     {
         if (isset($this->clientWork[$client->getId()])) {
-            $this->clientWork[$client->getId()]->getSender()->send($message);
+            $this->clientWork[$client->getId()]->getSender()->send($message->getMsg());
             unset($this->clientWork[$client->getId()]);
         } elseif ($message->getMsg() instanceof MessageRPCWorkerConfigurationRequest) {
             $this->handleClientConfigurationUpdate($client, $message->getMsg());

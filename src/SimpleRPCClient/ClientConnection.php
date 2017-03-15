@@ -57,31 +57,19 @@ class ClientConnection
                     'data',
                     function ($data) use ($stream, $client) {
                         //   echo "on data\n";
-                        $client->pushBytes($data);
+                        $client->getBuffer()->pushBytes($data);
 
-                        $msgs = ReceivedRpcMessage::fromData($client);
 
-                        if ($msgs == ReceivedRpcMessage::STATE_NEEDS_MORE_BYTES) {
-                            // echo "needs more byte\n";
+                        foreach ($client->resolveMessages() as $msg) {
 
-                            return;
-                        }
-
-                        if (!is_array($msgs)) {
-                            die("got bad message\n");
-                            return;
-                        }
-
-                        foreach ((array)$msgs as $msg) {
-
-                            if (!isset($this->messageQueue[$msg->getId()])) {
+                            if (!isset($this->messageQueue[$msg->getMsg()->getId()])) {
                                 die("wrong message id");
                             //    $this->client->close();
                             }
 
 
-                            $this->messageQueue[$msg->getId()]->resolve($msg);
-                            unset($this->messageQueue[$msg->getId()]);
+                            $this->messageQueue[$msg->getMsg()->getId()]->resolve($msg->getMsg());
+                            unset($this->messageQueue[$msg->getMsg()->getId()]);
                         }
 
                         if (empty($this->messageQueue)) {

@@ -5,6 +5,7 @@ namespace Tg\SimpleRPC;
 
 use Google\Protobuf\Internal\InputStream;
 use Tg\SimpleRPC\SimpleRPCMessage\Generated\RpcClientHeaderRequest;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageInterface;
 use Tg\SimpleRPC\SimpleRPCServer\RpcClient;
 
 class ReceivedRpcMessage
@@ -12,11 +13,12 @@ class ReceivedRpcMessage
     /** @var RpcClient */
     private $sender;
 
+    /** @var MessageInterface */
     private $msg;
 
     public function __construct(
         RpcClient $sender,
-        $msg
+        MessageInterface $msg
     ) {
         $this->sender = $sender;
         $this->msg = $msg;
@@ -31,7 +33,7 @@ class ReceivedRpcMessage
     }
 
     /**
-     * @return mixed
+     * @return MessageInterface
      */
     public function getMsg()
     {

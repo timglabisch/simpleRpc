@@ -3,7 +3,7 @@
 namespace Tg\SimpleRPC\SimpleRPCMessage\Message;
 
 
-class MessageRPCPong
+class MessageRPCPong implements MessageInterface
 {
     private $id;
 

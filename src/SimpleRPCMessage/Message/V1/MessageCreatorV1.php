@@ -44,7 +44,7 @@ class MessageCreatorV1 implements MessageCreatorInterface
             return $this->createWorkerConfigurationResponse($message);
         }
 
-        throw new CodecException('Message is not supported');
+        throw new CodecException('Message is not supported for class '.get_class($message));
     }
 
     public function supports($message, CodecInterface $codec)

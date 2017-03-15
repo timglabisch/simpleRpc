@@ -3,7 +3,7 @@
 namespace Tg\SimpleRPC\SimpleRPCMessage\Message;
 
 
-class MessageRPCPing
+class MessageRPCPing implements MessageInterface
 {
     /** @var int */
     private $id;

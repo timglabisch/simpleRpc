@@ -3,6 +3,7 @@
 namespace Tg\SimpleRPC\SimpleRPCWorker;
 
 
+use Tg\SimpleRPC\SimpleRPCMessage\Generated\RPCWorkerResponse;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCRequest;
 
 class MethodRpcWorkHandler implements RpcWorkHandlerInterface
@@ -27,6 +28,7 @@ class MethodRpcWorkHandler implements RpcWorkHandlerInterface
         }
 
         $cb = $this->methodMap[$method];
+
         return $cb($message);
     }
 
@@ -37,7 +39,7 @@ class MethodRpcWorkHandler implements RpcWorkHandlerInterface
      */
     public function on(string $method, callable $callable)
     {
-        $this->methodMap[$this->serviceName.$method] = $callable;
+        $this->methodMap[strtolower($this->serviceName.$method)] = $callable;
         return $this;
     }
 

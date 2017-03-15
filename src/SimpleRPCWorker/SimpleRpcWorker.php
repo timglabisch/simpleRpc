@@ -9,6 +9,7 @@ use React\Stream\Stream;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\CodecInterface;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\RPCCodecV1;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCRequest;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCResponse;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfiguration;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfigurationRequest;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageCreatorV1;
@@ -107,20 +108,25 @@ class SimpleRpcWorker
                     
                     foreach ($this->workHandlers as $workHandler) {
 
-                        if (!$msg instanceof MessageRPCRequest) {
+                        if (!$msg->getMsg() instanceof MessageRPCRequest) {
                             echo "interne Nachricht vom typ ". get_class($msg)."\n";
                             continue 2;
                         }
 
                         if (!$workHandler->supports($msg->getMsg())) {
+                            // todo, msg muss als rejected behandelt werden
                             continue 2;
                         }
 
-                        $response = $workHandler->onWork($msg);
+                        $response = $workHandler->onWork($msg->getMsg());
 
-                        $client->send($response);
+                        $client->send(
+                            new MessageRPCResponse($msg->getMsg()->getId(), 0, $response->toBytes())
+                        );
+                        continue 2;
                     }
 
+                    // todo, logic error, ...
                     throw new \RuntimeException("Could not handel Message.");
                 }
             });
