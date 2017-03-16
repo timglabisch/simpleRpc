@@ -2,16 +2,6 @@ syntax = "proto3";
 
 package Tg.SimpleRPC.SimpleRPCMessage.Generated;
 
-message RPCRequestHeader {
-    uint64 datetime = 1;
-    string method = 2;
-    bool repeatable = 3;
-}
-
-message RPCResponseHeader {
-    uint32 duration = 1;
-}
-
 message RPCWorkerRequest {
     RPCWorkerConfiguration configuration = 1;
 }

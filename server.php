@@ -30,4 +30,9 @@ $application = new Application();
 $application->add($container->get('command_start_angel'));
 $application->add($container->get('command_start_server'));
 $application->setDefaultCommand('server');
+
+$container->get('event_loop')->addPeriodicTimer(80, function() {
+   die('kill!');
+});
+
 $application->run();

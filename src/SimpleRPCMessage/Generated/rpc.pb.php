@@ -9,64 +9,6 @@ use Google\Protobuf\Internal\GPBType;
 use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
-class RPCRequestHeader extends \Google\Protobuf\Internal\Message
-{
-    private $datetime = 0;
-    private $method = '';
-    private $repeatable = false;
-
-    public function getDatetime()
-    {
-        return $this->datetime;
-    }
-
-    public function setDatetime($var)
-    {
-        GPBUtil::checkUint64($var);
-        $this->datetime = $var;
-    }
-
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    public function setMethod($var)
-    {
-        GPBUtil::checkString($var, True);
-        $this->method = $var;
-    }
-
-    public function getRepeatable()
-    {
-        return $this->repeatable;
-    }
-
-    public function setRepeatable($var)
-    {
-        GPBUtil::checkBool($var);
-        $this->repeatable = $var;
-    }
-
-}
-
-class RPCResponseHeader extends \Google\Protobuf\Internal\Message
-{
-    private $duration = 0;
-
-    public function getDuration()
-    {
-        return $this->duration;
-    }
-
-    public function setDuration($var)
-    {
-        GPBUtil::checkUint32($var);
-        $this->duration = $var;
-    }
-
-}
-
 class RPCWorkerRequest extends \Google\Protobuf\Internal\Message
 {
     private $configuration = null;
@@ -157,22 +99,18 @@ class RPCWorkerConfiguration extends \Google\Protobuf\Internal\Message
 $pool = DescriptorPool::getGeneratedPool();
 
 $pool->internalAddGeneratedFile(hex2bin(
-    "0aef030a097270632e70726f746f122754672e53696d706c655250432e53" .
-    "696d706c655250434d6573736167652e47656e65726174656422480a1052" .
-    "50435265717565737448656164657212100a086461746574696d65180120" .
-    "012804120e0a066d6574686f6418022001280912120a0a72657065617461" .
-    "626c6518032001280822250a11525043526573706f6e7365486561646572" .
-    "12100a086475726174696f6e18012001280d226a0a10525043576f726b65" .
-    "725265717565737412560a0d636f6e66696775726174696f6e1801200128" .
-    "0b323f2e54672e53696d706c655250432e53696d706c655250434d657373" .
-    "6167652e47656e6572617465642e525043576f726b6572436f6e66696775" .
-    "726174696f6e226b0a11525043576f726b6572526573706f6e736512560a" .
-    "0d636f6e66696775726174696f6e18012001280b323f2e54672e53696d70" .
-    "6c655250432e53696d706c655250434d6573736167652e47656e65726174" .
-    "65642e525043576f726b6572436f6e66696775726174696f6e22670a1652" .
-    "5043576f726b6572436f6e66696775726174696f6e120e0a066163746976" .
-    "6518012001280812110a096d61785f7461736b7318022001280d12100a08" .
-    "736572766963657318032003280912180a10636f6e6e656374696f6e5374" .
-    "72696e67180420012809620670726f746f33"
+    "0afe020a097270632e70726f746f122754672e53696d706c655250432e53" .
+    "696d706c655250434d6573736167652e47656e657261746564226a0a1052" .
+    "5043576f726b65725265717565737412560a0d636f6e6669677572617469" .
+    "6f6e18012001280b323f2e54672e53696d706c655250432e53696d706c65" .
+    "5250434d6573736167652e47656e6572617465642e525043576f726b6572" .
+    "436f6e66696775726174696f6e226b0a11525043576f726b657252657370" .
+    "6f6e736512560a0d636f6e66696775726174696f6e18012001280b323f2e" .
+    "54672e53696d706c655250432e53696d706c655250434d6573736167652e" .
+    "47656e6572617465642e525043576f726b6572436f6e6669677572617469" .
+    "6f6e22670a16525043576f726b6572436f6e66696775726174696f6e120e" .
+    "0a0661637469766518012001280812110a096d61785f7461736b73180220" .
+    "01280d12100a08736572766963657318032003280912180a10636f6e6e65" .
+    "6374696f6e537472696e67180420012809620670726f746f33"
 ));
 

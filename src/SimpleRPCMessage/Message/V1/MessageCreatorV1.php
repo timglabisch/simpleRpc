@@ -54,6 +54,7 @@ class MessageCreatorV1 implements MessageCreatorInterface
 
     private function createRPCRequest(MessageRPCRequest $message): RPCCodecMessageV1
     {
+        /*
         $header = new RPCRequestHeader();
         $header->setMethod($message->getMethod());
         $header->setRepeatable($message->isRepeatAble());
@@ -61,10 +62,11 @@ class MessageCreatorV1 implements MessageCreatorInterface
         if ($message->getRelevantUntil()) {
             $header->setDatetime($message->getRelevantUntil()->getTimestamp());
         }
+        */
 
         return new RPCCodecMessageV1(
             $message->getId(),
-            $header->encode(),
+            json_encode(['m' => $message->getMethod()]),
             $message->getBody(),
             RPCCodecV1::TYPE_RPC_REQUEST
         );
@@ -72,12 +74,9 @@ class MessageCreatorV1 implements MessageCreatorInterface
 
     private function createRPCResponse(MessageRPCResponse $message): RPCCodecMessageV1
     {
-        $header = new RPCResponseHeader();
-        $header->setDuration($message->getDuration());
-
         return new RPCCodecMessageV1(
             $message->getId(),
-            $header->encode(),
+            '',
             $message->getBody(),
             RPCCodecV1::TYPE_RPC_RESPONSE
         );

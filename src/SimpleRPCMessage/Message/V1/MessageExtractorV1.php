@@ -99,21 +99,22 @@ class MessageExtractorV1 implements MessageExtractorInterface
     private function extractRPCResponse(RPCCodecMessageV1 $message)
     {
         /** @var $header RPCResponseHeader */
-        $header = new RPCResponseHeader();
+        /*$header = new RPCResponseHeader();
 
         if (!$header->parseFromStream(new InputStream($message->getHeader()))) {
             throw new MalformedDataException('Could not parse Header');
-        }
+        }*/
 
         return new MessageRPCResponse(
             $message->getId(),
-            $header->getDuration(),
+            0,
             $message->getBody()
         );
     }
 
     private function extractRPCRequest(RPCCodecMessageV1 $message)
     {
+        /*
         $header = new RPCRequestHeader();
 
         if (!$header->parseFromStream(new InputStream($message->getHeader()))) {
@@ -126,13 +127,20 @@ class MessageExtractorV1 implements MessageExtractorInterface
                 throw new MalformedDataException('Could not Parse ValidUntil');
             }
         }
+        */
+
+        $header = @json_decode($message->getHeader(), true);
+
+        if (!$header || !isset($header['m'])) {
+            throw new MalformedDataException('Could not Parse Header');
+        }
 
         return new MessageRPCRequest(
             $message->getId(),
-            $header->getMethod(),
+            $header['m'],
             $message->getBody(),
-            $validUntil,
-            $header->getRepeatable()
+            new \DateTime(),
+            false
         );
     }
 }
