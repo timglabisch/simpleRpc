@@ -11,8 +11,8 @@ use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCRequest;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCResponse;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfiguration;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfigurationRequest;
-use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageCreatorV1;
-use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageExtractorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\MessageCreatorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\MessageExtractorV1;
 use Tg\SimpleRPC\SimpleRPCMessage\MessageHandler\MessageHandler;
 
 class PingPongTest extends \PHPUnit_Framework_TestCase
@@ -52,22 +52,16 @@ class PingPongTest extends \PHPUnit_Framework_TestCase
     public function testEncodeDecode($message)
     {
         $codec = new RPCCodecV1();
-        $messageCreator = new MessageCreatorV1();
-        $messageExtractor = new MessageExtractorV1();
 
         // encode
-        $this->assertTrue($messageCreator->supports($message, $codec));
-        $rpcMessage = $messageCreator->create($message);
-        static::assertTrue($codec->supportsEncode($rpcMessage));
-        $encodedMessage = $codec->encode($rpcMessage);
+        static::assertTrue($codec->supportsEncode($message));
+        $encodedMessage = $codec->encode($message);
 
         // decode
         $this->assertEquals(RPCCodecV1::SUPPORTS_YES, $codec->supportsDecode(new EasyBuf($encodedMessage)));
         $rpcMessage = $codec->decode(new EasyBuf($encodedMessage));
-        $this->assertTrue($messageExtractor->supports($rpcMessage));
-        $extractedMessage = $messageExtractor->extract($rpcMessage);
 
-        $this->assertEquals($message, $extractedMessage);
+        $this->assertEquals($message, $rpcMessage);
     }
 
 }

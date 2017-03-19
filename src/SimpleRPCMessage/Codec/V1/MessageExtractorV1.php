@@ -1,6 +1,6 @@
 <?php
 
-namespace Tg\SimpleRPC\SimpleRPCMessage\Message\V1;
+namespace Tg\SimpleRPC\SimpleRPCMessage\Codec\V1;
 
 use Google\Protobuf\Internal\InputStream;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\Exception\MalformedDataException;
@@ -21,13 +21,8 @@ use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfigurationRequest;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfigurationResponse;
 use Tg\SimpleRPC\SimpleRPCServer\ServerHandler\Worker\WorkerClientConfiguration;
 
-class MessageExtractorV1 implements MessageExtractorInterface
+class MessageExtractorV1
 {
-    public function supports($message): bool
-    {
-        return $message instanceof RPCCodecMessageV1;
-    }
-
     /**
      * @param RPCCodecMessageV1 $message
      * @return MessageRPCPing|MessageRPCPong|MessageRPCRequest|MessageRPCResponse|MessageRPCWorkerConfigurationRequest|MessageRPCWorkerConfigurationResponse

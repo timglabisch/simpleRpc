@@ -46,7 +46,7 @@ class RpcClient
         }
 
         $this->connection->write(
-            $this->messageHandler->encode($message, $this->codec)
+            $this->codec->encode($message)
         );
     }
 
@@ -72,17 +72,12 @@ class RpcClient
             }
         }
 
-        return array_map(function($msg) {
-            return new ReceivedRpcMessage(
-                $this,
-                $msg
-            );
-        }, $this->messageHandler->decode(
-            $this->getBuffer(),
-            $this->codec
-        ));
+        $msgs = [];
+        foreach ($this->messageHandler->decode($this->getBuffer(), $this->codec) as $msg) {
+            $msgs[] = new ReceivedRpcMessage($this, $msg);
+        }
 
-
+        return $msgs;
     }
 
     /**

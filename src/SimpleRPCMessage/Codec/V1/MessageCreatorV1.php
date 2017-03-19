@@ -1,6 +1,6 @@
 <?php
 
-namespace Tg\SimpleRPC\SimpleRPCMessage\Message\V1;
+namespace Tg\SimpleRPC\SimpleRPCMessage\Codec\V1;
 
 
 use Google\Protobuf\Internal\GPBType;
@@ -25,7 +25,7 @@ use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfiguration;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfigurationRequest;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfigurationResponse;
 
-class MessageCreatorV1 implements MessageCreatorInterface
+class MessageCreatorV1
 {
     /** @return RPCCodecMessageV1 */
     public function create($message)
@@ -45,11 +45,6 @@ class MessageCreatorV1 implements MessageCreatorInterface
         }
 
         throw new CodecException('Message is not supported for class '.get_class($message));
-    }
-
-    public function supports($message, CodecInterface $codec)
-    {
-        return $codec instanceof RPCCodecV1;
     }
 
     private function createRPCRequest(MessageRPCRequest $message): RPCCodecMessageV1

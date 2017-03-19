@@ -12,8 +12,8 @@ use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCRequest;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCResponse;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfiguration;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCWorkerConfigurationRequest;
-use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageCreatorV1;
-use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageExtractorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\MessageCreatorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\MessageExtractorV1;
 use Tg\SimpleRPC\SimpleRPCMessage\MessageHandler\MessageHandler;
 use Tg\SimpleRPC\SimpleRPCMessage\MessageIdGenerator;
 
@@ -42,9 +42,7 @@ class SimpleRpcWorker
         $this->serverIp = $serverIp;
         $this->loop = $loop ? $loop : \React\EventLoop\Factory::create();
         $this->messageHandler = new MessageHandler(
-            [new RPCCodecV1()],
-            [new MessageExtractorV1()],
-            [new MessageCreatorV1()]
+            [new RPCCodecV1()]
         );
         $this->idGenerator = new MessageIdGenerator();
     }

@@ -6,8 +6,8 @@ use React\EventLoop\LoopInterface;
 use Tg\SimpleRPC\SimpleRPCClient\ServiceDiscovery\ServiceDiscoveryInterface;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\RPCCodecV1;
 use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageRPCRequest;
-use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageCreatorV1;
-use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageExtractorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\MessageCreatorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\MessageExtractorV1;
 use Tg\SimpleRPC\SimpleRPCMessage\MessageHandler\MessageHandler;
 use Tg\SimpleRPC\SimpleRPCMessage\MessageIdGenerator;
 
@@ -37,9 +37,7 @@ class SimpleRpcClient
         $this->loop = $loop;
         $this->serviceDiscovery = $serviceDiscovery;
         $this->messageHandler = new MessageHandler(
-            [new RPCCodecV1()],
-            [new MessageExtractorV1()],
-            [new MessageCreatorV1()]
+            [new RPCCodecV1()]
         );
         $this->idGenerator = new MessageIdGenerator();
     }

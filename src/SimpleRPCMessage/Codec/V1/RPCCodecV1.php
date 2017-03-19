@@ -6,6 +6,7 @@ namespace Tg\SimpleRPC\SimpleRPCMessage\Codec\V1;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\CodecInterface;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\Exception\MalformedDataException;
 use Tg\SimpleRPC\SimpleRPCMessage\EasyBuf;
+use Tg\SimpleRPC\SimpleRPCMessage\Message\MessageInterface;
 
 class RPCCodecV1 implements CodecInterface
 {
@@ -27,7 +28,24 @@ class RPCCodecV1 implements CodecInterface
 
     const TYPE_PONG = 8;
 
-    protected static $headerSize;
+    private static $headerSize;
+
+    /** @var MessageCreatorV1 */
+    private $messageCreator;
+
+    /** @var MessageExtractorV1 */
+    private $messageExtractor;
+
+    /**
+     * RPCCodecV1 constructor.
+     * @param MessageCreatorV1 $messageCreator
+     * @param MessageExtractorV1 $messageExtractor
+     */
+    public function __construct()
+    {
+        $this->messageCreator = new MessageCreatorV1();
+        $this->messageExtractor = new MessageExtractorV1();
+    }
 
     public static function getHeaderSize() {
         if (!static::$headerSize) {
@@ -44,6 +62,7 @@ class RPCCodecV1 implements CodecInterface
 
         return static::$headerSize;
     }
+
 
     public function supportsDecode(EasyBuf $easyBuf)
     {
@@ -84,22 +103,24 @@ class RPCCodecV1 implements CodecInterface
 
         $easyBuf->drainAt(static::getHeaderSize()); // consume the protocol header
 
-        return new RPCCodecMessageV1(
+        return $this->messageExtractor->extract(new RPCCodecMessageV1(
             (int)$unpacked['id'],
             $unpacked['header_length'] ? $easyBuf->drainAt((int)$unpacked['header_length']) : '',
             $easyBuf->drainAt((int)$unpacked['length']),
             (int)$unpacked['type']
-        );
+        ));
     }
 
     public function supportsEncode($msg): bool
     {
-        return $msg instanceof RPCCodecMessageV1;
+        return $msg instanceof MessageInterface;
     }
 
     /** @param RPCCodecMessageV1 $msg */
     public function encode($msg): string
     {
+        $msg = $this->messageCreator->create($msg);
+
         return pack(
                 'nnnNNN',
                 static::PROTOCOL_IDENTIFIER,

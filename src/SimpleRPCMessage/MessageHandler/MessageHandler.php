@@ -15,17 +15,9 @@ class MessageHandler
     /** @var CodecInterface[] */
     private $codecs;
 
-    /** @var MessageExtractorInterface[] */
-    private $messageExtractors;
-
-    /** @var MessageCreatorInterface[] */
-    private $messageCreators;
-
-    public function __construct(array $codecs, array $messageExtractors, array $messageCreators)
+    public function __construct(array $codecs)
     {
         $this->codecs = $codecs;
-        $this->messageExtractors = $messageExtractors;
-        $this->messageCreators = $messageCreators;
     }
 
     /**
@@ -51,17 +43,6 @@ class MessageHandler
         throw new CodecException("Could not find matching codec");
     }
 
-    private function getMessageExtractor($decoded)
-    {
-        foreach ($this->messageExtractors as $messageExtractor) {
-            if ($messageExtractor->supports($decoded)) {
-                return $messageExtractor;
-            }
-        }
-
-        throw new CodecException("Could not find matching message extractor");
-    }
-
     public function decode(EasyBuf $buffer, CodecInterface $codec)
     {
         $msgs = [];
@@ -84,31 +65,12 @@ class MessageHandler
                 return $msgs;
             }
 
-            $msgs[] = $this->getMessageExtractor($decoded)->extract($decoded);
+            $msgs[] = $decoded;
 
 
         } while($buffer->len());
 
         return $msgs;
-    }
-
-
-    private function getMessageCreator($msg, CodecInterface $codec)
-    {
-        foreach ($this->messageCreators as $messageCreator) {
-            if ($messageCreator->supports($msg, $codec)) {
-                return $messageCreator;
-            }
-        }
-
-        throw new CodecException("Could not find matching message creator");
-    }
-
-    public function encode($msg, CodecInterface $codec)
-    {
-        return $codec->encode(
-            $this->getMessageCreator($msg, $codec)->create($msg)
-        );
     }
 
     public function getDefaultCodec()

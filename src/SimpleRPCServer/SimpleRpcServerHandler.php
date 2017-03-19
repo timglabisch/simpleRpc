@@ -7,8 +7,8 @@ use React\EventLoop\LoopInterface;
 use React\Socket\ConnectionInterface;
 use Tg\SimpleRPC\ReceivedRpcMessage;
 use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\RPCCodecV1;
-use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageCreatorV1;
-use Tg\SimpleRPC\SimpleRPCMessage\Message\V1\MessageExtractorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\MessageCreatorV1;
+use Tg\SimpleRPC\SimpleRPCMessage\Codec\V1\MessageExtractorV1;
 use Tg\SimpleRPC\SimpleRPCMessage\MessageHandler\MessageHandler;
 
 class SimpleRpcServerHandler
@@ -29,9 +29,7 @@ class SimpleRpcServerHandler
     ) {
         $this->serverHandler = $serverHandler;
         $this->messageHandler = new MessageHandler(
-            [new RPCCodecV1()],
-            [new MessageExtractorV1()],
-            [new MessageCreatorV1()]
+            [new RPCCodecV1()]
         );
     }
     
